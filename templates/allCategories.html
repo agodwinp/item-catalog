@@ -7,7 +7,7 @@
         <h1>Excellerate</h1>
         <h3>Take your sports equipment to the next level</h3>
         {% for i in categories %}
-            <p> {{i['name']}}</p>
+            <a href = "{{url_for('showItems', category_name = i['name'])}}"> {{i['name']}}</p>
         {% endfor %}
     </body>
 </html>
