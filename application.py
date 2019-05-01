@@ -44,7 +44,7 @@ def deleteCategory(category_name): # DELETE
 def showItems(category_name): # READ
     return "This page will show the items for a category"
 
-@app.route('/catalog/<string:category_name>/<string:item_name>')
+@app.route('/catalog/<string:category_name>/items/<string:item_name>')
 def showItemDetails(category_name, item_name): # READ
     return "This page will show the item details for a category"
 
