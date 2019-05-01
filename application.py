@@ -21,11 +21,11 @@ items = [{'id':1, 'title':"Boots", "description":"This is the description", "cat
 
 @app.route('/')
 def home(): #READ
-    return "This will be the home page"
+    return render_template("home.html")
 
 @app.route('/catalog')
 def showCatalog(): # READ
-    return "This will show all catalog categories"
+    return render_template('allCategories.html', categories=categories)
 
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def newCategory(): # CREATE
