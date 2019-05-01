@@ -27,4 +27,42 @@ def home(): #READ
 def showCatalog(): # READ
     return "This will show all catalog categories"
 
+@app.route('/catalog/new', methods=['GET', 'POST'])
+def newCategory(): # CREATE
+    return "This page will create a new category"
 
+@app.route('/catalog/<string:category_name>/edit', methods=['GET', 'POST'])
+def editCategory(category_name): # UPDATE
+    return "This page will edit a category"
+
+@app.route('/catalog/<string:category_name>/delete', methods=['GET','POST'])
+def deleteCategory(category_name): # DELETE
+    return "This page will delete a category"
+
+@app.route('/catalog/<string:category_name>')
+@app.route('/catalog/<string:category_name>/items')
+def showItems(category_name): # READ
+    return "This page will show the items for a category"
+
+@app.route('/catalog/<string:category_name>/<string:item_name>')
+def showItemDetails(category_name, item_name): # READ
+    return "This page will show the item details for a category"
+
+@app.route('/catalog/<string:category_name>/items/new', methods=['GET', 'POST'])
+def newItem(category_name): # CREATE
+    return "This page will create new item for a category"
+
+@app.route('/catalog/<string:category_name>/items/<string:item_name>/edit')
+def editItem(category_name, item_name): # UPDATE
+    return "This page will edit an item for a category"
+
+@app.route('/catalog/<string:category_name>/items/<string:item_name>/delete')
+def deleteItem(category_name, item_name): # DELETE
+    return "This page will delete an item for a category"
+
+# need to add JSON endpoints and login button
+# also need to add login protection over certain pages
+
+if __name__ == '__main__':
+    app.debug = True
+    app.run(host='0.0.0.0', port=8000)
