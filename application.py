@@ -1,14 +1,24 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, make_response, abort, g
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database import Base, User, Category, Item
+from flask_httpauth import HTTPBasicAuth
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+import httplib2
+import requests
+import json
 
 app = Flask(__name__)
+auth = HTTPBasicAuth()
 
 engine = create_engine('sqlite:///catalog.db', connect_args={'check_same_thread':False})
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+CLIENT_ID = json.loads(
+    open('client_secret.json', 'r').read())['web']['client_id']
 
 # fake data
 user = {'id':1, 'username':'arungp', 'password_hash':'pa55W0rd'}
@@ -19,8 +29,23 @@ item = {'id':1, 'title':"Boots", "description":"This is the description", "categ
 items = [{'id':1, 'title':"Boots", "description":"This is the description", "category_id":1}, {'id':2, 'title':"Gloves", "description":"This is the description", "category_id":1}]
 
 
+# verify authorisation
+@auth.verify_password
+def verify_password(username_or_token, password):
+    # attempt verification with token
+    user_id = User.verify_auth_token(username_or_token)
+    if user_id:
+        user = session.query(User).filter_by(id=user_id).one()
+    # otherwise, try username
+    else:
+        user = session.query(User).filter_by(username=username_or_token).first()
+        if not user or not user.verify_password(password):
+            return False
+    g.user = user
+    return True
+
 @app.route('/')
-def home(): #READ
+def home(): # READ
     return render_template("home.html")
 
 @app.route('/catalog')
@@ -42,9 +67,11 @@ def editCategory(category_name): # UPDATE
 def deleteCategory(category_name): # DELETE
     return "This page will delete a category"
 
+# PROTECTED
 @app.route('/catalog/<string:category_name>')
 @app.route('/catalog/<string:category_name>/items')
 def showItems(category_name): # READ
+    # have an accordian here to expand details
     info = []
     for i in items:
         data = {}
