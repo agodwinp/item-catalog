@@ -22,13 +22,6 @@ session = DBSession()
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 
-# fake data
-user = {'id':1, 'username':'arungp', 'password_hash':'pa55W0rd'}
-users = [{'id':1, 'username':'arungp', 'password_hash':'pa55W0rd'}, {'id':2, 'username':'arungp2', 'password_hash':'pa55W0rd2'}]
-category = {'id':1, 'name':'Football'}
-categories = [{'id':1, 'name':'Football'}, {'id':2, 'name':'Basketball'}]
-item = {'id':1, 'title':"Boots", "description":"This is the description", "category_id":1}
-items = [{'id':1, 'title':"Boots", "description":"This is the description", "category_id":1}, {'id':2, 'title':"Gloves", "description":"This is the description", "category_id":1}]
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -90,6 +83,8 @@ def landingPage():
 
 @app.route('/catalog')
 def showCatalog(): # READ
+    #return login_session['picture']
+    categories = session.query(Category).all()
     return render_template('allCategories.html', categories=categories)
 
 # PROTECTED
@@ -112,17 +107,9 @@ def deleteCategory(category_name): # DELETE
 @app.route('/catalog/<string:category_name>/items')
 def showItems(category_name): # READ
     # have an accordian here to expand details
-    info = []
-    for i in items:
-        data = {}
-        data['name'] = i['title']
-        data['description'] = i['description']
-        category_id = i['category_id']
-        for j in categories:
-            if j['id'] == category_id:
-                data['category'] = j['name']
-        info.append(data)
-    return render_template('showItems.html', info=info)
+    category_id = session.query(Category).filter_by(name=category_name).one()
+    items = session.query(Item).filter_by(category_id=category_id.id).all()
+    return render_template('showItems.html', items=items)
 
 @app.route('/catalog/<string:category_name>/items/<string:item_name>')
 def showItemDetails(category_name, item_name): # READ
