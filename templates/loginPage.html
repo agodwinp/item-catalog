@@ -11,7 +11,6 @@
     <body>
         <a href = "{{url_for('showCatalog')}}">Enter</a>
         </br>
-
         <!-- Google Sign-In button -->
 		<div class="g-signin2" data-onsuccess="onSignIn" id="signInButton"></div>
 		<div id="result"></div>
@@ -29,7 +28,7 @@
 					// Send a post request
 					$.ajax({
 						type: 'POST',
-						url: "/?state={{STATE}}",
+						url: "/login?state={{STATE}}",
 						processData: false,
 						data: id_token,
 						contentType: 'application/octet-stream; charset=utf-8',
