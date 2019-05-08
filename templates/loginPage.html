@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Load Google Sign-In pre-requisites -->
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<!-- Load jQuery pre-requisites -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<meta name="google-signin-client_id" content="169649741771-41dfhe2bc1kmjkfq1r97ir1b24cr9lqm.apps.googleusercontent.com">
+
+    </head>
+    <body>
+        <a href = "{{url_for('showCatalog')}}">Enter</a>
+        </br>
+
+        <!-- Google Sign-In button -->
+		<div class="g-signin2" data-onsuccess="onSignIn" id="signInButton"></div>
+		<div id="result"></div>
+		<!-- Add a sign out button to sign out of App -->
+		<a href="#" onclick="signOut();" id="signOutButton">Sign out</a>
+		<!-- On submission, we need to send a callback function -->
+		<script type="text/javascript">
+			function onSignIn(googleUser) {
+				// Get the user id token after the user signs into their account
+				var id_token = googleUser.getAuthResponse().id_token;
+				if (id_token) {
+					// Hide the sign in button now that the user is authorised
+					$('#signInButton').attr('style', 'display: none');
+                    $('#signOutButton').attr('style', 'display: True');
+					// Send a post request
+					$.ajax({
+						type: 'POST',
+						url: "/?state={{STATE}}",
+						processData: false,
+						data: id_token,
+						contentType: 'application/octet-stream; charset=utf-8',
+						success: function(result) {
+							if (result) {
+								$('#result').html('Login Successful </br>' + result + '</br> Redirecting...')
+								setTimeout(function() {
+									window.location.href = '/catalog';
+								}, 2000);
+							} else {
+								$('#result').html('Failed to make a server-side call. Check your configuration and console.');
+							}
+						}
+					});
+				}
+			}
+		</script>
+		<script>
+			function signOut() {
+                $('#signInButton').attr('style', 'display: True');
+				$('#signOutButton').attr('style', 'display: none');
+				var auth2 = gapi.auth2.getAuthInstance();
+				auth2.signOut().then(function () {
+			  	console.log('User signed out.');
+				});
+		  	}
+		</script>
+        
+    </body>
+</html>
