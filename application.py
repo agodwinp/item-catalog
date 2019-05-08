@@ -7,9 +7,11 @@ from flask_httpauth import HTTPBasicAuth
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import random, string, json, requests, httplib2
+from flask_oauth import OAuth
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
+oauth = OAuth()
 
 engine = create_engine('sqlite:///catalog.db', connect_args={'check_same_thread':False})
 Base.metadata.bind = engine
@@ -17,7 +19,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 CLIENT_ID = json.loads(
-    open('client_secret.json', 'r').read())['web']['client_id']
+    open('client_secrets.json', 'r').read())['web']['client_id']
 
 # fake data
 user = {'id':1, 'username':'arungp', 'password_hash':'pa55W0rd'}
@@ -27,24 +29,21 @@ categories = [{'id':1, 'name':'Football'}, {'id':2, 'name':'Basketball'}]
 item = {'id':1, 'title':"Boots", "description":"This is the description", "category_id":1}
 items = [{'id':1, 'title':"Boots", "description":"This is the description", "category_id":1}, {'id':2, 'title':"Gloves", "description":"This is the description", "category_id":1}]
 
+@app.route('/', methods=['GET', 'POST'])
+def landingPage():
+    if request.method == 'GET':
+        state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+        login_session['state'] = state
+        return render_template("landingPage.html", STATE=state)
 
-# verify authorisation
-@auth.verify_password
-def verify_password(username_or_token, password):
-    # attempt verification with token
-    user_id = User.verify_auth_token(username_or_token)
-    if user_id:
-        user = session.query(User).filter_by(id=user_id).one()
-    # otherwise, try username
-    else:
-        user = session.query(User).filter_by(username=username_or_token).first()
-        if not user or not user.verify_password(password):
-            return False
-    g.user = user
-    return True
+
+
 
 @app.route('/')
 def home(): # READ
+    access_token = login_session.get('access_token')
+    if access_token is None:
+        return render_template("login.html")
     return render_template("home.html")
 
 # Create anti-forgery state token
