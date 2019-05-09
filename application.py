@@ -75,6 +75,17 @@ def landingPage():
             login_session['username'] = idinfo['name']
             login_session['picture'] = idinfo['picture']
             login_session['email'] = idinfo['email']
+
+            print(login_session['username'])
+            print(login_session['picture'])
+            print(login_session['email'])
+            # Check if this user exists in database
+            try:
+                user = session.query(User).filter_by(email=login_session['email']).one()
+            except:
+                newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
+                session.add(newUser)
+                session.commit()
             return "Successful"
         except ValueError:
             # Invalid token
