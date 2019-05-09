@@ -213,10 +213,10 @@ def editItem(category_name, item_name): # UPDATE
         return redirect(url_for('showItems', category_name=category_name))
 
 # PROTECTED
-@app.route('/catalog/<string:category_name>/items/<string:item_name>/delete')
+@app.route('/catalog/<string:category_name>/items/<string:item_name>/delete', methods=['GET', 'POST'])
 def deleteItem(category_name, item_name): # DELETE
     if request.method == 'GET':
-        return render_template('deleteItem.html', item_name=item_name)
+        return render_template('deleteItem.html', category_name=category_name, item_name=item_name)
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
