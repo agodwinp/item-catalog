@@ -190,11 +190,12 @@ def newItem(category_name): # CREATE
 @app.route('/catalog/<string:category_name>/items/<string:item_name>/edit', methods=['GET', 'POST'])
 def editItem(category_name, item_name): # UPDATE
     if request.method == 'GET':
-        return render_template('editItem.html', category_name=category_name, item_name=item_name)
+        categories = session.query(Category).all()
+        return render_template('editItem.html', categories = categories, category_name=category_name, item_name=item_name)
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
-        item = session.query(Item).filter_by(title=item_name).one()
+        item = session.query(Item).filter_by(title=item_name).first()
         item_id = item.id
         # Double check that user is authorised to make an item in this category
         if item.user_id != user_id:
@@ -203,10 +204,12 @@ def editItem(category_name, item_name): # UPDATE
         editedItem.title = request.form['title']
         editedItem.description = request.form['description']
         category = request.form['category']
-        editedItem.category = category.id
+        category_id = session.query(Category).filter_by(name=category).one()
+        category_id = category_id.id
+        editedItem.category_id = category_id
         session.add(editedItem)
         session.commit()
-        return redirect(url_for('showItems', category_name=category.name))
+        return redirect(url_for('showItems', category_name=category_name))
 
 # PROTECTED
 @app.route('/catalog/<string:category_name>/items/<string:item_name>/delete')
