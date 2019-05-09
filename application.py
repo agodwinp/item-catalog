@@ -167,14 +167,24 @@ def showItems(category_name): # READ
     items = session.query(Item).filter_by(category_id=category_id).all()
     return render_template('showItems.html', items=items, category_name=category_name)
 
-#@app.route('/catalog/<string:category_name>/items/<string:item_name>')
-#def showItemDetails(category_name, item_name): # READ
-#    return "This page will show the item details for a category"
 
 # PROTECTED
 @app.route('/catalog/<string:category_name>/items/new', methods=['GET', 'POST'])
 def newItem(category_name): # CREATE
-    return "This page will create new item for a category"
+    if request.method == 'GET':
+        return render_template('newItem.html', category_name=category_name)
+    else:
+        user = session.query(User).filter_by(email=login_session['email']).one()
+        user_id = user.id
+        category = session.query(Category).filter_by(name=category_name).one()
+        category_id = category.id
+        # Double check that user is authorised to make an item in this category
+        if category.user_id != user_id:
+            return render_template("unAuthorisedEntry.html")
+        newItem = Item(title=request.form['title'], description=request.form['description'], category_id=category_id, user_id=user_id)
+        session.add(newItem)
+        session.commit()
+        return redirect(url_for('showItems', category_name=category.name))
 
 # PROTECTED
 @app.route('/catalog/<string:category_name>/items/<string:item_name>/edit')

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>    
+    <head>
+        
+    </head>
+	<body>
+        <h2> Add Item </h2>
+        <form action = "{{url_for('newItem', category_name=category_name)}}" method = 'post'>
+            <p>Title:</p>
+            <input type ='text' size='30' name='title' placeholder = 'New item...'>
+            </br>
+            <p>Description:</p>
+            <textarea name = 'description' rows='5' cols='40' placeholder = 'New item description...'></textarea>
+            </br>
+            <input type='submit' value='Create'>
+            </br>
+            <a class="cancel" href = "{{url_for('showItems', category_name=category_name)}}">Cancel</a>
+    </body>
+</html>
