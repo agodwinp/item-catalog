@@ -7,15 +7,15 @@
         <h1>Excellerate</h1>
         <h3>Take your sports equipment to the next level</h3>
         </br>
-        <a href="{{url_for('newItem', category_name=category_name)}}">Add Item</a>
+        <a href="{{url_for('newItem', category_id=category_id)}}">Add Item</a>
         </br>
         {% if items %}
             {% for i in items %}
                 <p>{{i.title}}</p>
                 <p>{{i.description}}</p>
-                <a href="{{url_for('editItem', category_name=category_name, item_name=i.title)}}">Edit Item</a>
+                <a href="{{url_for('editItem', category_id=category_id, item_id=i.id)}}">Edit Item</a>
                 </br>
-                <a href="{{url_for('deleteItem', category_name=category_name, item_name=i.title)}}">Delete Item</a>
+                <a href="{{url_for('deleteItem', category_id=category_id, item_id=i.id)}}">Delete Item</a>
                 <br><br>
             {% endfor %}
         {% else %}

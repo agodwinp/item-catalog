@@ -5,7 +5,7 @@
     </head>
 	<body>
         <h2> Add Item </h2>
-        <form action = "{{url_for('newItem', category_name=category_name)}}" method = 'post'>
+        <form action = "{{url_for('newItem', category_id=category_id)}}" method = 'post'>
             <p>Title:</p>
             <input type ='text' size='30' name='title' placeholder = 'New item...'>
             </br>
@@ -14,6 +14,6 @@
             </br>
             <input type='submit' value='Create'>
             </br>
-            <a class="cancel" href = "{{url_for('showItems', category_name=category_name)}}">Cancel</a>
+            <a class="cancel" href = "{{url_for('showItems', category_id=category_id)}}">Cancel</a>
     </body>
 </html>
