@@ -187,9 +187,26 @@ def newItem(category_name): # CREATE
         return redirect(url_for('showItems', category_name=category.name))
 
 # PROTECTED
-@app.route('/catalog/<string:category_name>/items/<string:item_name>/edit')
+@app.route('/catalog/<string:category_name>/items/<string:item_name>/edit', methods=['GET', 'POST'])
 def editItem(category_name, item_name): # UPDATE
-    return "This page will edit an item for a category"
+    if request.method == 'GET':
+        return render_template('editItem.html', category_name=category_name, item_name=item_name)
+    else:
+        user = session.query(User).filter_by(email=login_session['email']).one()
+        user_id = user.id
+        item = session.query(Item).filter_by(title=item_name).one()
+        item_id = item.id
+        # Double check that user is authorised to make an item in this category
+        if item.user_id != user_id:
+            return render_template("unAuthorisedEntry.html")
+        editedItem = session.query(Item).filter_by(id=item_id).one()
+        editedItem.title = request.form['title']
+        editedItem.description = request.form['description']
+        category = request.form['category']
+        editedItem.category = category.id
+        session.add(editedItem)
+        session.commit()
+        return redirect(url_for('showItems', category_name=category.name))
 
 # PROTECTED
 @app.route('/catalog/<string:category_name>/items/<string:item_name>/delete')
