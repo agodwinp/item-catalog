@@ -201,6 +201,7 @@ def editItem(category_name, item_name): # UPDATE
         if item.user_id != user_id:
             return render_template("unAuthorisedEntry.html")
         editedItem = session.query(Item).filter_by(id=item_id).one()
+        # Update values
         editedItem.title = request.form['title']
         editedItem.description = request.form['description']
         category = request.form['category']
@@ -214,7 +215,20 @@ def editItem(category_name, item_name): # UPDATE
 # PROTECTED
 @app.route('/catalog/<string:category_name>/items/<string:item_name>/delete')
 def deleteItem(category_name, item_name): # DELETE
-    return "This page will delete an item for a category"
+    if request.method == 'GET':
+        return render_template('deleteItem.html', item_name=item_name)
+    else:
+        user = session.query(User).filter_by(email=login_session['email']).one()
+        user_id = user.id
+        item = session.query(Item).filter_by(title=item_name).first()
+        item_id = item.id
+        # Double check that user is authorised to make an item in this category
+        if item.user_id != user_id:
+            return render_template("unAuthorisedEntry.html")
+        deletedItem = session.query(Item).filter_by(id=item_id).one()
+        session.delete(deletedItem)
+        session.commit()
+        return redirect(url_for('showItems', category_name=category_name))
 
 # need to add JSON endpoints and login button
 # also need to add login protection over certain pages
