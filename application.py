@@ -90,7 +90,13 @@ def showCatalog(): # READ
 # PROTECTED
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def newCategory(): # CREATE
-    return "This page will create a new category"
+    if request.method == 'GET':
+        return render_template('newCategory.html')
+    else:
+        newCategory = Category(name=request.form['name'])
+        session.add(newCategory)
+        session.commit()
+        return redirect(url_for('showCatalog'))
 
 # PROTECTED
 @app.route('/catalog/<string:category_name>/edit', methods=['GET', 'POST'])
