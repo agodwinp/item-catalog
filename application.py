@@ -75,13 +75,9 @@ def landingPage():
             login_session['username'] = idinfo['name']
             login_session['picture'] = idinfo['picture']
             login_session['email'] = idinfo['email']
-
-            print(login_session['username'])
-            print(login_session['picture'])
-            print(login_session['email'])
             # Check if this user exists in database
             try:
-                user = session.query(User).filter_by(email=login_session['email']).one()
+                session.query(User).filter_by(email=login_session['email']).one()
             except:
                 newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
                 session.add(newUser)
@@ -98,16 +94,20 @@ def showCatalog(): # READ
     categories = session.query(Category).all()
     return render_template('allCategories.html', categories=categories)
 
+
 # PROTECTED
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def newCategory(): # CREATE
     if request.method == 'GET':
         return render_template('newCategory.html')
     else:
-        newCategory = Category(name=request.form['name'])
+        user = session.query(User).filter_by(email=login_session['email']).one()
+        user_id = user.id
+        newCategory = Category(name=request.form['name'], user_id=user_id)
         session.add(newCategory)
         session.commit()
         return redirect(url_for('showCatalog'))
+
 
 # PROTECTED
 @app.route('/catalog/<string:category_name>/edit', methods=['GET', 'POST'])
@@ -116,10 +116,10 @@ def editCategory(category_name): # UPDATE
         # Check if they are not logged in
         if login_session is None:
             return render_template("unAuthorisedEntry.html")
-        # Check if they are authorised to EDIT or DELETE the category
+        # Check if they are authorised to EDIT the category
         category = session.query(Category).filter_by(name=category_name).one()
         category_owner = category.user_id
-        user = session.query(User).filter_by(name=login_session['username']).one()
+        user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         if category_owner != user_id:
             return render_template("unAuthorisedEntry.html")
@@ -137,7 +137,24 @@ def editCategory(category_name): # UPDATE
 # PROTECTED
 @app.route('/catalog/<string:category_name>/delete', methods=['GET','POST'])
 def deleteCategory(category_name): # DELETE
-    return "This page will delete a category"
+    if request.method == 'GET':
+        # Check if they are not logged in
+        if login_session is None:
+            return render_template("unAuthorisedEntry.html")
+        # Check if they are authorised to DELETE the category
+        category = session.query(Category).filter_by(name=category_name).one()
+        category_owner = category.user_id
+        user = session.query(User).filter_by(email=login_session['email']).one()
+        user_id = user.id
+        if category_owner != user_id:
+            return render_template("unAuthorisedEntry.html")
+        # If they are, redirect to this
+        return render_template('deleteCategory.html', category_name=category_name)
+    else:
+        deletedCategory = session.query(Category).filter_by(name=category_name).one()
+        session.delete(deletedCategory)
+        session.commit()
+        return redirect(url_for('showCatalog'))
 
 # PROTECTED
 @app.route('/catalog/<string:category_name>')
@@ -146,7 +163,7 @@ def showItems(category_name): # READ
     # have an accordian here to expand details
     category_id = session.query(Category).filter_by(name=category_name).one()
     items = session.query(Item).filter_by(category_id=category_id.id).all()
-    return render_template('showItems.html', items=items)
+    return render_template('showItems.html', items=items, category_name=category_name)
 
 @app.route('/catalog/<string:category_name>/items/<string:item_name>')
 def showItemDetails(category_name, item_name): # READ
