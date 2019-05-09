@@ -7,6 +7,7 @@ from flask_httpauth import HTTPBasicAuth
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import random, string, json, requests, httplib2
+from flask_login import logout_user
 
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
@@ -92,6 +93,14 @@ def landingPage():
             pass
 
 
+@app.route('/logout')
+def logout():
+    #state = generateState(login_session, 'state')
+    login_session.clear()
+    #return render_template("loginPage.html", STATE=state)
+    return redirect(url_for('showCatalog'))
+
+
 @app.route('/catalog')
 def showCatalog(): # READ
     state = generateState(login_session, 'state')
@@ -109,7 +118,7 @@ def newCategory(): # CREATE
             user = login_session['username']
             return render_template('newCategory.html', STATE=state)
         except KeyError:
-            return render_template("unAuthorisedEntry.html", STATE=state)
+            return redirect(url_for('showCatalog'))
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
@@ -133,12 +142,12 @@ def editCategory(category_id): # UPDATE
             user = session.query(User).filter_by(email=login_session['email']).one()
             user_id = user.id
             if category_owner != user_id:
-                return render_template("unAuthorisedEntry.html", STATE=state)
+                return redirect(url_for('showCatalog'))
             # If they are, redirect to this
             category_name = category.name
             return render_template('editCategory.html', category_id=category_id, category_name=category_name, STATE=state)
         except KeyError:
-            return render_template("unAuthorisedEntry.html")
+            return redirect(url_for('showCatalog'))
     else:
         editedCategory = session.query(Category).filter_by(id=category_id).one()
         if request.form['name']:
@@ -161,12 +170,12 @@ def deleteCategory(category_id): # DELETE
             user = session.query(User).filter_by(email=login_session['email']).one()
             user_id = user.id
             if category_owner != user_id:
-                return render_template("unAuthorisedEntry.html", STATE=state)
+                return redirect(url_for('showCatalog'))
             # If they are, redirect to this
             category_name = category.name
             return render_template('deleteCategory.html', category_id=category_id, category_name=category_name, STATE=state)
         except KeyError:
-            return render_template("unAuthorisedEntry.html", STATE=state)
+            return redirect(url_for('showCatalog'))
     else:
         deletedCategory = session.query(Category).filter_by(id=category_id).one()
         session.delete(deletedCategory)
@@ -181,7 +190,9 @@ def showItems(category_id): # READ
     state = generateState(login_session, 'state')
     # have an accordian here to expand details
     items = session.query(Item).filter_by(category_id=category_id).all()
-    return render_template('showItems.html', items=items, category_id=category_id, STATE=state)
+    category = session.query(Category).filter_by(id=category_id).one()
+    category_name = category.name
+    return render_template('showItems.html', items=items, category_id=category_id, category_name=category_name, STATE=state)
 
 
 # PROTECTED
@@ -193,14 +204,14 @@ def newItem(category_id): # CREATE
             user = login_session['username']
             return render_template('newItem.html', category_id=category_id, STATE=state)
         except KeyError:
-            return render_template("unAuthorisedEntry.html", STATE=state)
+            return redirect(url_for('showCatalog'))
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         category = session.query(Category).filter_by(id=category_id).one()
         # Double check that user is authorised to make an item in this category
         if category.user_id != user_id:
-            return render_template("unAuthorisedEntry.html", STATE=state)
+            return redirect(url_for('showCatalog'))
         newItem = Item(title=request.form['title'], description=request.form['description'], category_id=category_id, user_id=user_id)
         session.add(newItem)
         session.commit()
@@ -218,13 +229,13 @@ def editItem(category_id, item_id): # UPDATE
             item_name=editedItem.title
             return render_template('editItem.html', categories=categories, category_id=category_id, item_id=item_id, item_name=item_name, STATE=state)
         except KeyError:
-            return render_template("unAuthorisedEntry.html", STATE=state)
+            return redirect(url_for('showCatalog'))
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         # Double check that user is authorised to make an item in this category
         if editedItem.user_id != user_id:
-            return render_template("unAuthorisedEntry.html", STATE=state)
+            return redirect(url_for('showCatalog'))
         # Update values
         editedItem.title = request.form['title']
         editedItem.description = request.form['description']
@@ -245,13 +256,13 @@ def deleteItem(category_id, item_id): # DELETE
             item_name = deletedItem.title
             return render_template('deleteItem.html', category_id=category_id, item_id=item_id, item_name=item_name, STATE=state)
         except KeyError:
-             return render_template("unAuthorisedEntry.html", STATE=state)
+             return redirect(url_for('showCatalog'))
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         # Double check that user is authorised to make an item in this category
         if deletedItem.user_id != user_id:
-            return render_template("unAuthorisedEntry.html", STATE=state)
+            return redirect(url_for('showCatalog'))
         session.delete(deletedItem)
         session.commit()
         return redirect(url_for('showItems', category_id=category_id))

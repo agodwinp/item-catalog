@@ -52,6 +52,24 @@
 				$('#signOutButton').attr('style', 'display: none');
 				var auth2 = gapi.auth2.getAuthInstance();
 				auth2.signOut().then(function () {
+					// Send a post request
+					$.ajax({
+						type: 'POST',
+						url: "/logout?state={{STATE}}",
+						processData: false,
+						data: id_token,
+						contentType: 'application/octet-stream; charset=utf-8',
+						success: function(result) {
+							if (result) {
+								$('#result').html('Login Successful </br>' + result + '</br> Redirecting...')
+								setTimeout(function() {
+									window.location.href = '/catalog';
+								}, 2000);
+							} else {
+								$('#result').html('Failed to make a server-side call. Check your configuration and console.');
+							}
+						}
+					});
 			  	console.log('User signed out.');
 				});
 		  	}
