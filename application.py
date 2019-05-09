@@ -110,23 +110,24 @@ def newCategory(): # CREATE
 
 
 # PROTECTED
-@app.route('/catalog/<string:category_name>/edit', methods=['GET', 'POST'])
-def editCategory(category_name): # UPDATE
+@app.route('/catalog/<int:category_id>/edit', methods=['GET', 'POST'])
+def editCategory(category_id): # UPDATE
     if request.method == 'GET':
         # Check if they are not logged in
-        if login_session is None:
+        if login_session['username'] is None:
             return render_template("unAuthorisedEntry.html")
         # Check if they are authorised to EDIT the category
-        category = session.query(Category).filter_by(name=category_name).one()
+        category = session.query(Category).filter_by(id=category_id).one()
         category_owner = category.user_id
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         if category_owner != user_id:
             return render_template("unAuthorisedEntry.html")
         # If they are, redirect to this
-        return render_template('editCategory.html', category_name=category_name)
+        category_name = category.name
+        return render_template('editCategory.html', category_id=category_id, category_name=category_name)
     else:
-        editedCategory = session.query(Category).filter_by(name=category_name).one()
+        editedCategory = session.query(Category).filter_by(id=category_id).one()
         if request.form['name']:
             editedCategory.name = request.form['name']
         session.add(editedCategory)
@@ -135,100 +136,94 @@ def editCategory(category_name): # UPDATE
 
 
 # PROTECTED
-@app.route('/catalog/<string:category_name>/delete', methods=['GET','POST'])
-def deleteCategory(category_name): # DELETE
+@app.route('/catalog/<int:category_id>/delete', methods=['GET','POST'])
+def deleteCategory(category_id): # DELETE
     if request.method == 'GET':
         # Check if they are not logged in
-        if login_session is None:
+        if login_session['username'] is None:
             return render_template("unAuthorisedEntry.html")
         # Check if they are authorised to DELETE the category
-        category = session.query(Category).filter_by(name=category_name).one()
+        category = session.query(Category).filter_by(id=category_id).one()
         category_owner = category.user_id
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         if category_owner != user_id:
             return render_template("unAuthorisedEntry.html")
         # If they are, redirect to this
-        return render_template('deleteCategory.html', category_name=category_name)
+        return render_template('deleteCategory.html', category_id=category_id, category_name=category.name)
     else:
-        deletedCategory = session.query(Category).filter_by(name=category_name).one()
+        deletedCategory = session.query(Category).filter_by(id=category_id).one()
         session.delete(deletedCategory)
         session.commit()
         return redirect(url_for('showCatalog'))
 
 
 # PROTECTED
-@app.route('/catalog/<string:category_name>')
-@app.route('/catalog/<string:category_name>/items')
-def showItems(category_name): # READ
+@app.route('/catalog/<int:category_id>')
+@app.route('/catalog/<int:category_id>/items')
+def showItems(category_id): # READ
     # have an accordian here to expand details
-    category = session.query(Category).filter_by(name=category_name).one()
-    category_id = category.id
     items = session.query(Item).filter_by(category_id=category_id).all()
-    return render_template('showItems.html', items=items, category_name=category_name)
+    return render_template('showItems.html', items=items, category_id=category_id)
 
 
 # PROTECTED
-@app.route('/catalog/<string:category_name>/items/new', methods=['GET', 'POST'])
-def newItem(category_name): # CREATE
+@app.route('/catalog/<int:category_id>/items/new', methods=['GET', 'POST'])
+def newItem(category_id): # CREATE
     if request.method == 'GET':
-        return render_template('newItem.html', category_name=category_name)
+        return render_template('newItem.html', category_id=category_id)
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
-        category = session.query(Category).filter_by(name=category_name).one()
-        category_id = category.id
+        category = session.query(Category).filter_by(id=category_id).one()
         # Double check that user is authorised to make an item in this category
         if category.user_id != user_id:
             return render_template("unAuthorisedEntry.html")
         newItem = Item(title=request.form['title'], description=request.form['description'], category_id=category_id, user_id=user_id)
         session.add(newItem)
         session.commit()
-        return redirect(url_for('showItems', category_name=category.name))
+        return redirect(url_for('showItems', category_id=category_id))
 
 # PROTECTED
-@app.route('/catalog/<string:category_name>/items/<string:item_name>/edit', methods=['GET', 'POST'])
-def editItem(category_name, item_name): # UPDATE
+@app.route('/catalog/<int:category_id>/items/<int:item_id>/edit', methods=['GET', 'POST'])
+def editItem(category_id, item_id): # UPDATE
     if request.method == 'GET':
         categories = session.query(Category).all()
-        return render_template('editItem.html', categories = categories, category_name=category_name, item_name=item_name)
+        item = session.query(Item).filter_by(id=item_id).one()
+        item_name=item.title
+        return render_template('editItem.html', categories=categories, category_id=category_id, item_id=item_id, item_name=item_name)
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
-        item = session.query(Item).filter_by(title=item_name).first()
-        item_id = item.id
-        # Double check that user is authorised to make an item in this category
-        if item.user_id != user_id:
-            return render_template("unAuthorisedEntry.html")
         editedItem = session.query(Item).filter_by(id=item_id).one()
+        # Double check that user is authorised to make an item in this category
+        if editedItem.user_id != user_id:
+            return render_template("unAuthorisedEntry.html")
         # Update values
         editedItem.title = request.form['title']
         editedItem.description = request.form['description']
-        category = request.form['category']
-        category_id = session.query(Category).filter_by(name=category).one()
-        category_id = category_id.id
+        category_id = request.form['category_id']
         editedItem.category_id = category_id
         session.add(editedItem)
         session.commit()
-        return redirect(url_for('showItems', category_name=category_name))
+        return redirect(url_for('showItems', category_id=category_id))
 
 # PROTECTED
-@app.route('/catalog/<string:category_name>/items/<string:item_name>/delete', methods=['GET', 'POST'])
-def deleteItem(category_name, item_name): # DELETE
+@app.route('/catalog/<int:category_id>/items/<int:item_id>/delete', methods=['GET', 'POST'])
+def deleteItem(category_id, item_id): # DELETE
+    deletedItem = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'GET':
-        return render_template('deleteItem.html', category_name=category_name, item_name=item_name)
+        item_name = deletedItem.title
+        return render_template('deleteItem.html', category_id=category_id, item_id=item_id, item_name=item_name)
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
-        item = session.query(Item).filter_by(title=item_name).first()
-        item_id = item.id
         # Double check that user is authorised to make an item in this category
-        if item.user_id != user_id:
+        if deletedItem.user_id != user_id:
             return render_template("unAuthorisedEntry.html")
-        deletedItem = session.query(Item).filter_by(id=item_id).one()
         session.delete(deletedItem)
         session.commit()
-        return redirect(url_for('showItems', category_name=category_name))
+        return redirect(url_for('showItems', category_id=category_id))
 
 # need to add JSON endpoints and login button
 # also need to add login protection over certain pages
