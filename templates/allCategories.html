@@ -6,6 +6,8 @@
     <body>
         <h1>Excellerate</h1>
         <h3>Take your sports equipment to the next level</h3>
+        <a href = "{{url_for('newCategory')}}">Add Category</a>
+        </br></br>
         {% if categories %}
             {% for i in categories %}
                 <a href = "{{url_for('showItems', category_name = i.name)}}"> {{i.name}} </a>
@@ -13,7 +15,7 @@
                 <a href = "{{url_for('editCategory', category_name = i.name)}}"> Edit </a>
                 </br>
                 <a href = "{{url_for('deleteCategory', category_name = i.name)}}"> Delete</a>
-                </br>
+                </br></br>
             {% endfor %}
         {% else %}
             <div>
