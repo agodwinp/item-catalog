@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Excellerate</title>
-    </head>
-    <body>
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
         <h1>Excellerate</h1>
         <h3>Take your sports equipment to the next level</h3>
         </br>
@@ -23,5 +21,5 @@
                 <h3> There are currently no items for {{category_name}}... </h3>
             </div>
         {% endif %}
-    </body>
-</html>
+
+{% endblock %}
