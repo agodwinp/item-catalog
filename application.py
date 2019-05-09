@@ -95,7 +95,27 @@ def newCategory(): # CREATE
 # PROTECTED
 @app.route('/catalog/<string:category_name>/edit', methods=['GET', 'POST'])
 def editCategory(category_name): # UPDATE
-    return "This page will edit a category"
+    if request.method == 'GET':
+        # Check if they are not logged in
+        if login_session is None:
+            return render_template("unAuthorisedEntry.html")
+        # Check if they are authorised to EDIT or DELETE the category
+        category = session.query(Category).filter_by(name=category_name).one()
+        category_owner = category.user_id
+        user = session.query(User).filter_by(name=login_session['username']).one()
+        user_id = user.id
+        if category_owner != user_id:
+            return render_template("unAuthorisedEntry.html")
+        # If they are, redirect to this
+        return render_template('editCategory.html', category_name=category_name)
+    else:
+        editedCategory = session.query(Category).filter_by(name=category_name).one()
+        if request.form['name']:
+            editedCategory.name = request.form['name']
+        session.add(editedCategory)
+        session.commit()
+        return redirect(url_for('showCatalog'))
+
 
 # PROTECTED
 @app.route('/catalog/<string:category_name>/delete', methods=['GET','POST'])
