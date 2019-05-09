@@ -156,18 +156,20 @@ def deleteCategory(category_name): # DELETE
         session.commit()
         return redirect(url_for('showCatalog'))
 
+
 # PROTECTED
 @app.route('/catalog/<string:category_name>')
 @app.route('/catalog/<string:category_name>/items')
 def showItems(category_name): # READ
     # have an accordian here to expand details
-    category_id = session.query(Category).filter_by(name=category_name).one()
-    items = session.query(Item).filter_by(category_id=category_id.id).all()
+    category = session.query(Category).filter_by(name=category_name).one()
+    category_id = category.id
+    items = session.query(Item).filter_by(category_id=category_id).all()
     return render_template('showItems.html', items=items, category_name=category_name)
 
-@app.route('/catalog/<string:category_name>/items/<string:item_name>')
-def showItemDetails(category_name, item_name): # READ
-    return "This page will show the item details for a category"
+#@app.route('/catalog/<string:category_name>/items/<string:item_name>')
+#def showItemDetails(category_name, item_name): # READ
+#    return "This page will show the item details for a category"
 
 # PROTECTED
 @app.route('/catalog/<string:category_name>/items/new', methods=['GET', 'POST'])
