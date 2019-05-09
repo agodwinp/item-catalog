@@ -31,8 +31,8 @@
 							if (result) {
 								//$('#result').html('Login Successful </br>' + result + '</br> Redirecting...')
 								setTimeout(function() {
-									//window.location.href = '/catalog';
-								}, 2000);
+									//window.location.href = '/welcome';
+								}, 1000);
 							} else {
 								$('#result').html('Failed to make a server-side call. Check your configuration and console.');
 							}
@@ -49,7 +49,7 @@
 				auth2.signOut().then(function () {
 			  	console.log('User signed out.');
 				  $.ajax({
-						type: 'GET',
+						type: 'POST',
 						url: "/logout",
 						contentType: 'application/octet-stream; charset=utf-8',
 						success: function(result) {
@@ -57,7 +57,7 @@
 								//$('#result').html('Login Successful </br>' + result + '</br> Redirecting...')
 								setTimeout(function() {
 									window.location.href = '/catalog';
-								}, 1000);
+								}, 500);
 							} else {
 								$('#result').html('Failed to make a server-side call. Check your configuration and console.');
 							}

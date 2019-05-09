@@ -93,18 +93,25 @@ def landingPage():
             pass
 
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
     #state = generateState(login_session, 'state')
     login_session.clear()
     #return render_template("loginPage.html", STATE=state)
-    return redirect(url_for('showCatalog'))
+    #return redirect(url_for('showCatalog'))
+    return "Logged out"
+
+
+@app.route('/welcome')
+def welcome():
+    name = login_session['username']
+    picture = login_session['picture']
+    return render_template('welcome.html', name=name, picture=picture)
 
 
 @app.route('/catalog')
 def showCatalog(): # READ
     state = generateState(login_session, 'state')
-    #return login_session['picture']
     categories = session.query(Category).all()
     return render_template('allCategories.html', categories=categories, STATE=state)
 
@@ -118,6 +125,7 @@ def newCategory(): # CREATE
             user = login_session['username']
             return render_template('newCategory.html', STATE=state)
         except KeyError:
+            flash("Please log in!")
             return redirect(url_for('showCatalog'))
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
@@ -125,6 +133,7 @@ def newCategory(): # CREATE
         newCategory = Category(name=request.form['name'], user_id=user_id)
         session.add(newCategory)
         session.commit()
+        flash("New category added!")
         return redirect(url_for('showCatalog'))
 
 
@@ -142,11 +151,13 @@ def editCategory(category_id): # UPDATE
             user = session.query(User).filter_by(email=login_session['email']).one()
             user_id = user.id
             if category_owner != user_id:
+                flash("You are not authorised to edit this category...")
                 return redirect(url_for('showCatalog'))
             # If they are, redirect to this
             category_name = category.name
             return render_template('editCategory.html', category_id=category_id, category_name=category_name, STATE=state)
         except KeyError:
+            flash("Please log in!")
             return redirect(url_for('showCatalog'))
     else:
         editedCategory = session.query(Category).filter_by(id=category_id).one()
@@ -154,6 +165,7 @@ def editCategory(category_id): # UPDATE
             editedCategory.name = request.form['name']
         session.add(editedCategory)
         session.commit()
+        flash("Category successfully edited!")
         return redirect(url_for('showCatalog'))
 
 
@@ -164,22 +176,25 @@ def deleteCategory(category_id): # DELETE
     if request.method == 'GET':
         try:
             user = login_session['username']
-            # Check if they are authorised to EDIT the category
+            # Check if they are authorised to DELETE the category
             category = session.query(Category).filter_by(id=category_id).one()
             category_owner = category.user_id
             user = session.query(User).filter_by(email=login_session['email']).one()
             user_id = user.id
             if category_owner != user_id:
+                flash("You are not authorised to delete this category...")
                 return redirect(url_for('showCatalog'))
             # If they are, redirect to this
             category_name = category.name
             return render_template('deleteCategory.html', category_id=category_id, category_name=category_name, STATE=state)
         except KeyError:
+            flash("Please log in!")
             return redirect(url_for('showCatalog'))
     else:
         deletedCategory = session.query(Category).filter_by(id=category_id).one()
         session.delete(deletedCategory)
         session.commit()
+        flash("Category successfully deleted!")
         return redirect(url_for('showCatalog'))
 
 
@@ -204,17 +219,20 @@ def newItem(category_id): # CREATE
             user = login_session['username']
             return render_template('newItem.html', category_id=category_id, STATE=state)
         except KeyError:
-            return redirect(url_for('showCatalog'))
+            flash("Please log in!")
+            return redirect(url_for('showItems', category_id=category_id))
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         category = session.query(Category).filter_by(id=category_id).one()
         # Double check that user is authorised to make an item in this category
         if category.user_id != user_id:
-            return redirect(url_for('showCatalog'))
+            flash("You are not authorised to create an item in this category...")
+            return redirect(url_for('showItems', category_id=category_id))
         newItem = Item(title=request.form['title'], description=request.form['description'], category_id=category_id, user_id=user_id)
         session.add(newItem)
         session.commit()
+        flash("Item successfully created!")
         return redirect(url_for('showItems', category_id=category_id))
 
 # PROTECTED
@@ -229,13 +247,15 @@ def editItem(category_id, item_id): # UPDATE
             item_name=editedItem.title
             return render_template('editItem.html', categories=categories, category_id=category_id, item_id=item_id, item_name=item_name, STATE=state)
         except KeyError:
-            return redirect(url_for('showCatalog'))
+            flash("Please log in!")
+            return redirect(url_for('showItems', category_id=category_id))
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         # Double check that user is authorised to make an item in this category
         if editedItem.user_id != user_id:
-            return redirect(url_for('showCatalog'))
+            flash("You are not auhthorised to edit this item...")
+            return redirect(url_for('showItems', category_id=category_id))
         # Update values
         editedItem.title = request.form['title']
         editedItem.description = request.form['description']
@@ -243,6 +263,7 @@ def editItem(category_id, item_id): # UPDATE
         editedItem.category_id = category_id
         session.add(editedItem)
         session.commit()
+        flash("Item successfully edited!")
         return redirect(url_for('showItems', category_id=category_id))
 
 # PROTECTED
@@ -256,15 +277,18 @@ def deleteItem(category_id, item_id): # DELETE
             item_name = deletedItem.title
             return render_template('deleteItem.html', category_id=category_id, item_id=item_id, item_name=item_name, STATE=state)
         except KeyError:
-             return redirect(url_for('showCatalog'))
+            flash("Please log in!")
+            return redirect(url_for('showItems', category_id=category_id))
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         # Double check that user is authorised to make an item in this category
         if deletedItem.user_id != user_id:
-            return redirect(url_for('showCatalog'))
+            flash("You are not auhthorised to delete this item...")
+            return redirect(url_for('showItems', category_id=category_id))
         session.delete(deletedItem)
         session.commit()
+        flash("Item successfully deleted!")
         return redirect(url_for('showItems', category_id=category_id))
 
 # need to add JSON endpoints and login button
