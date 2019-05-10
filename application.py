@@ -28,6 +28,27 @@ def generateState(sess, key):
     sess[key] = state
     return state
 
+# JSON API Endpoints
+@app.route('/catalog/json')
+def catalogJSON():
+    restaurants = session.query(Restaurant).all()
+    return jsonify(Restaurants=[i.serialize for i in restaurants])
+
+
+@app.route('/catalog/<int:category_id>/json')
+@app.route('/catalog/<int:category_id>/items/json')
+def categoryJSON(category_id):
+    #restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
+    return jsonify(MenuItems=[i.serialize for i in items])
+
+
+@app.route('/catalog/<int:category_id>/items/<int:item_id>/json')
+def itemsJSON(category_id, item_id):
+    #restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    menuItem = session.query(MenuItem).filter_by(id=menu_id).one()
+    return jsonify(MenuItem=menuItem.serialize)
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
@@ -254,7 +275,7 @@ def editItem(category_id, item_id): # UPDATE
         user_id = user.id
         # Double check that user is authorised to make an item in this category
         if editedItem.user_id != user_id:
-            flash("You are not auhthorised to edit this item...")
+            flash("You are not authorised to edit this item...")
             return redirect(url_for('showItems', category_id=category_id))
         # Update values
         editedItem.title = request.form['title']
@@ -284,7 +305,7 @@ def deleteItem(category_id, item_id): # DELETE
         user_id = user.id
         # Double check that user is authorised to make an item in this category
         if deletedItem.user_id != user_id:
-            flash("You are not auhthorised to delete this item...")
+            flash("You are not authorised to delete this item...")
             return redirect(url_for('showItems', category_id=category_id))
         session.delete(deletedItem)
         session.commit()
