@@ -1,3 +1,4 @@
+# Import packages
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, make_response, abort, g
 from flask import session as login_session
 from sqlalchemy import create_engine
@@ -8,26 +9,26 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import random, string, json, requests, httplib2
 from flask_login import logout_user
-
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 
+# Instantiate Flask application and database session
 app = Flask(__name__)
 auth = HTTPBasicAuth()
-
 engine = create_engine('sqlite:///catalog.db', connect_args={'check_same_thread':False})
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Load client ID for Google sign-in
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 
+# Function used for generate state
 def generateState(sess, key):
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
     sess[key] = state
     return state
-
 
 # JSON API Endpoints
 @app.route('/catalog/json')
@@ -35,20 +36,18 @@ def catalogJSON():
     categories = session.query(Category).all()
     return jsonify(Categories=[i.serialize for i in categories])
 
-
 @app.route('/catalog/<int:category_id>/json')
 @app.route('/catalog/<int:category_id>/items/json')
 def categoryJSON(category_id):
     category_items = session.query(Item).filter_by(category_id=category_id)
     return jsonify(Category=[i.serialize for i in category_items])
 
-
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/json')
 def itemsJSON(category_id, item_id):
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(Item=item.serialize)
 
-
+# Application routes
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def landingPage():
@@ -112,7 +111,6 @@ def landingPage():
             # Invalid token
             pass
 
-
 @app.route('/logout', methods=['POST'])
 def logout():
     #state = generateState(login_session, 'state')
@@ -121,20 +119,17 @@ def logout():
     #return redirect(url_for('showCatalog'))
     return "Logged out"
 
-
 @app.route('/welcome')
 def welcome():
     name = login_session['username']
     picture = login_session['picture']
     return render_template('welcome.html', name=name, picture=picture)
 
-
 @app.route('/catalog')
 def showCatalog(): # READ
     state = generateState(login_session, 'state')
     categories = session.query(Category).all()
     return render_template('allCategories.html', categories=categories, STATE=state)
-
 
 # PROTECTED
 @app.route('/catalog/new', methods=['GET', 'POST'])
@@ -155,7 +150,6 @@ def newCategory(): # CREATE
         session.commit()
         flash("New category added!")
         return redirect(url_for('showCatalog'))
-
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/edit', methods=['GET', 'POST'])
@@ -188,7 +182,6 @@ def editCategory(category_id): # UPDATE
         flash("Category successfully edited!")
         return redirect(url_for('showCatalog'))
 
-
 # PROTECTED
 @app.route('/catalog/<int:category_id>/delete', methods=['GET','POST'])
 def deleteCategory(category_id): # DELETE
@@ -217,7 +210,6 @@ def deleteCategory(category_id): # DELETE
         flash("Category successfully deleted!")
         return redirect(url_for('showCatalog'))
 
-
 # PROTECTED
 @app.route('/catalog/<int:category_id>')
 @app.route('/catalog/<int:category_id>/items')
@@ -228,7 +220,6 @@ def showItems(category_id): # READ
     category = session.query(Category).filter_by(id=category_id).one()
     category_name = category.name
     return render_template('showItems.html', items=items, category_id=category_id, category_name=category_name, STATE=state)
-
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/items/new', methods=['GET', 'POST'])
@@ -310,9 +301,6 @@ def deleteItem(category_id, item_id): # DELETE
         session.commit()
         flash("Item successfully deleted!")
         return redirect(url_for('showItems', category_id=category_id))
-
-# need to add JSON endpoints and login button
-# also need to add login protection over certain pages
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
