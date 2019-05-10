@@ -8,11 +8,11 @@
 		<meta name="google-signin-client_id" content="169649741771-41dfhe2bc1kmjkfq1r97ir1b24cr9lqm.apps.googleusercontent.com">
 		<!-- Load Google fonts -->
 		<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
-		<!-- Load CSS -->
-		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/styles.css')}}">
 		<!-- Add Bootstrap styling -->
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- Load CSS -->
+		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/styles.css')}}">
     </head>
     <body>
         {% block content %}
@@ -25,7 +25,10 @@
 				if (id_token) {
 					// Hide the sign in button now that the user is authorised
 					$('#signInButton').attr('style', 'display: none');
-                    $('#signOutButton').attr('style', 'display: True');
+					$('#signOutButton').attr('style', 'display: True');
+					$('#addCategory').attr('style', 'display: True');
+					$('.editButton').attr('style', 'display: True');
+					$('.deleteButton').attr('style', 'display: True');
 					// Send a post request
 					$.ajax({
 						type: 'POST',
@@ -51,6 +54,9 @@
 			function signOut() {
                 $('#signInButton').attr('style', 'display: True');
 				$('#signOutButton').attr('style', 'display: none');
+				$('#addCategory').attr('style', 'display: none');
+				$('.editButton').attr('style', 'display: none');
+				$('.deleteButton').attr('style', 'display: none');
 				var auth2 = gapi.auth2.getAuthInstance();
 				auth2.signOut().then(function () {
 			  	console.log('User signed out.');
@@ -72,7 +78,13 @@
 				});
 		  	}
 		</script>
-        
+		<script>
+			function hideButtons() {
+				$('.addButton').attr('style', 'display: none');
+				$('.editButton').attr('style', 'display: none');
+				$('.deleteButton').attr('style', 'display: none');
+				}
+		</script>
     </body>
 </html>
 

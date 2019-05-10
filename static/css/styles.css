@@ -5,13 +5,30 @@ h1, h2, h3, p {
     color: black;
 }
 
+div {
+    text-align: center;
+}
+
 a {
     color: black;
     font-family: 'PT Sans', sans-serif;
     text-decoration: none;
+
 }
 
 a:hover {
     color: grey;
   }
+
+  .abcRioButton.abcRioButtonLightBlue { 
+      margin: 0 auto;
+    }
+
+/* Background colours */
+
+#headerBar {
+    background-color: dodgerblue;
+    padding: 0px;
+    margin: 0px;
+}
 
