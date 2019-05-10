@@ -28,26 +28,25 @@ def generateState(sess, key):
     sess[key] = state
     return state
 
+
 # JSON API Endpoints
 @app.route('/catalog/json')
 def catalogJSON():
-    restaurants = session.query(Restaurant).all()
-    return jsonify(Restaurants=[i.serialize for i in restaurants])
+    categories = session.query(Category).all()
+    return jsonify(Categories=[i.serialize for i in categories])
 
 
 @app.route('/catalog/<int:category_id>/json')
 @app.route('/catalog/<int:category_id>/items/json')
 def categoryJSON(category_id):
-    #restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    items = session.query(MenuItem).filter_by(restaurant_id=restaurant_id)
-    return jsonify(MenuItems=[i.serialize for i in items])
+    category_items = session.query(Item).filter_by(category_id=category_id)
+    return jsonify(Category=[i.serialize for i in category_items])
 
 
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/json')
 def itemsJSON(category_id, item_id):
-    #restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    menuItem = session.query(MenuItem).filter_by(id=menu_id).one()
-    return jsonify(MenuItem=menuItem.serialize)
+    item = session.query(Item).filter_by(id=item_id).one()
+    return jsonify(Item=item.serialize)
 
 
 @app.route('/', methods=['GET', 'POST'])
