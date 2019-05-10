@@ -1,0 +1,17 @@
+/* Foundational styling of text and links */
+
+h1, h2, h3, p {
+    font-family: 'PT Sans', sans-serif;
+    color: black;
+}
+
+a {
+    color: black;
+    font-family: 'PT Sans', sans-serif;
+    text-decoration: none;
+}
+
+a:hover {
+    color: grey;
+  }
+
