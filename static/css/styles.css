@@ -34,8 +34,6 @@ a:hover {
 
 /* Card columns */
 
-
-
 @media (min-width: 34em) {
     .card-columns {
         -webkit-column-count: 1;
@@ -66,4 +64,14 @@ a:hover {
         -moz-column-count: 4;
         column-count: 4;
     }
+}
+
+/* Form  alignment */
+
+.addForm .form-group.text-left {
+    text-align: left;
+}
+
+div.form-group {
+    text-align: left;
 }
