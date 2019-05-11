@@ -26,9 +26,9 @@
 					// Hide the sign in button now that the user is authorised
 					$('#signInButton').attr('style', 'display: none');
 					$('#signOutButton').attr('style', 'display: True');
-					$('#addCategory').attr('style', 'display: True');
-					$('.btn.btn-primary.editButton').attr('style', 'display: True');
-					$('.btn.btn-primary.deleteButton').attr('style', 'display: True');
+					$('#addButton').attr('style', 'display: True');
+					$('.btn.btn-primary.btn-sm.editButton').attr('style', 'display: True');
+					$('.btn.btn-primary.btn-sm.deleteButton').attr('style', 'display: True');
 					// Send a post request
 					$.ajax({
 						type: 'POST',
@@ -54,9 +54,9 @@
 			function signOut() {
                 $('#signInButton').attr('style', 'display: True');
 				$('#signOutButton').attr('style', 'display: none');
-				$('#addCategory').attr('style', 'display: none');
-				$('.btn.btn-primary.editButton').attr('style', 'display: True');
-				$('.btn.btn-primary.deleteButton').attr('style', 'display: none');
+				$('#addButton').attr('style', 'display: none');
+				$('.btn.btn-primary.btn-sm.editButton').attr('style', 'display: True');
+				$('.btn.btn-primary.btn-sm.deleteButton').attr('style', 'display: none');
 				var auth2 = gapi.auth2.getAuthInstance();
 				auth2.signOut().then(function () {
 			  	console.log('User signed out.');
