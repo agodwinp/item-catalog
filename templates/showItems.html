@@ -1,6 +1,7 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "header.html" %}
+    <!-- Flash messages -->
     <div class="container">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -10,22 +11,46 @@
         {% endif %}
         {% endwith %}
     </div>
-
-    <a href="{{url_for('newItem', category_id=category_id)}}" id="addButton" style="display: none;">Add Item</a>
+    <!-- Add item button -->
     </br>
-    {% if items %}
-        {% for i in items %}
-            <p>{{i.title}}</p>
-            <p>{{i.description}}</p>
-            <a href="{{url_for('editItem', category_id=category_id, item_id=i.id)}}" class="btn btn-primary btn-sm editButton" style="display: none;">Edit Item</a>
-            </br>
-            <a href="{{url_for('deleteItem', category_id=category_id, item_id=i.id)}}" class="btn btn-primary btn-sm deleteButton" style="display: none;">Delete Item</a>
-            <br><br>
-        {% endfor %}
-    {% else %}
-        <div>
-            <h3> There are currently no items for {{category_name}}... </h3>
-        </div>
-    {% endif %}
-
+    <div class="container">
+        <a href="{{url_for('newItem', category_id=category_id)}}" id="addButton" style="display: none;">Add Item</a>
+    </div>
+    </br>
+    <!-- Show items with Accordian -->
+    <div class="container">
+        {% if items %}
+            <div class="accordion" id="accordionExample">
+                {% for i in items %}
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <h2 class="mb-0">
+                                <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne">{{i.title}}</button>									
+                            </h2>
+                        </div>
+                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="container">
+                                        {{i.description}}
+                                    </div>
+                                </div>
+                                </br>
+                                <div class="row">
+                                    <div class="container">
+                                        <a href="{{url_for('editItem', category_id=category_id, item_id=i.id)}}" class="btn btn-primary btn-sm editButton" style="display: none;">Edit Item</a>
+                                        <a href="{{url_for('deleteItem', category_id=category_id, item_id=i.id)}}" class="btn btn-primary btn-sm deleteButton" style="display: none;">Delete Item</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div>
+                <h3> There are currently no items for {{category_name}}... </h3>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
