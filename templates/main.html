@@ -27,8 +27,8 @@
 					$('#signInButton').attr('style', 'display: none');
 					$('#signOutButton').attr('style', 'display: True');
 					$('#addCategory').attr('style', 'display: True');
-					$('.editButton').attr('style', 'display: True');
-					$('.deleteButton').attr('style', 'display: True');
+					$('.btn.btn-primary.editButton').attr('style', 'display: True');
+					$('.btn.btn-primary.deleteButton').attr('style', 'display: True');
 					// Send a post request
 					$.ajax({
 						type: 'POST',
@@ -55,8 +55,8 @@
                 $('#signInButton').attr('style', 'display: True');
 				$('#signOutButton').attr('style', 'display: none');
 				$('#addCategory').attr('style', 'display: none');
-				$('.editButton').attr('style', 'display: none');
-				$('.deleteButton').attr('style', 'display: none');
+				$('.btn.btn-primary.editButton').attr('style', 'display: True');
+				$('.btn.btn-primary.deleteButton').attr('style', 'display: none');
 				var auth2 = gapi.auth2.getAuthInstance();
 				auth2.signOut().then(function () {
 			  	console.log('User signed out.');
