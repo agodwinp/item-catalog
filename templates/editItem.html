@@ -2,18 +2,55 @@
 {% block content %}
 {% include "header.html" %}
 
-    <h2> Edit Item </h2>
-        <form action = "{{url_for('editItem', category_id=category_id, item_id=item_id)}}" method = 'post'>
-            <p>Name:</p>
-            <input type ='text' size='30' name='title' placeholder = '{{item_name}}'>
-            <p>Description:</p>
-            <textarea name = 'description' rows='5' cols='40' placeholder = 'Enter description...'></textarea>
-            <p>Category:</p>
-                {% for i in categories %}
-                <input type ='radio' name='category_id' value='{{i.id}}'>{{i.name}}
-                {% endfor %}
-            <input type='submit' value='Edit'>
-            <a href = "{{url_for('showItems', category_id=category_id)}}">Cancel</a>                 
-        </form>
+    </br></br>
+    <div class="container" style="width: 50rem;">
+        <div class="card">
+            <div class="card-body">
+                <h3>Edit Item</h3>
+                </br>
+                <form class="addForm" action="{{url_for('editItem', category_id=category_id, item_id=item_id)}}" method='post'>
+                    <!-- Name -->
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Name:</label>
+                        <input type="text" size=30 name='title' class="form-control" id="exampleFormControlInput1" placeholder="{{item_name}}">
+                    </div>
+                    </br>
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Description:</label>
+                        <textarea name='description' class="form-control" id="exampleFormControlTextarea1" placeholder="Add description here..." rows=5></textarea>
+                    </div>
+                    </br>
+                    <!-- Category selector -->
+                    <div class="form-group">
+                        <label for="exampleFormControlSelector1">Category:</label>
+                        <select name="category_id" class="custom-select" id="exampleFormControlSelector1" size="5">
+                            {% for i in categories %}
+                                {% if i == category_name %}
+                                    <option selected name="category_id" value={{i.id}}>{{i.name}}</option>
+                                {% else %}
+                                    <option name="category_id" value={{i.id}}>{{i.name}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    </br>
+                    <!-- Confirm / Cancel buttons -->
+                    <div class="container">
+                        <div class="row">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a href="{{url_for('showItems', category_id=category_id)}}" class="btn btn-primary">Cancel</a>
+                            </div>
+                        </div>    
+                    </div>                
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
 
 {% endblock %}
