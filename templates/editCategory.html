@@ -2,14 +2,31 @@
 {% block content %}
 {% include "header.html" %}
 
-        <form action = "{{url_for('editCategory', category_id=category_id)}}" method='post'>
-            <p>Name: </p>
-            </br>
-            <input type='text' size=30 name='name' placeholder='{{category_name}}'>
-            </br>
-            <input type='submit' value='Confirm'>
-            </br>
-            <a href="{{url_for('showCatalog')}}"> Cancel </a>
-        </form>
+    </br></br>
+    <div class="container" style="width: 50rem;">
+        <div class="card">
+            <div class="card-body">
+                <h3>Edit Category</h3>
+                </br>
+                <form class="addForm" action="{{url_for('editCategory', category_id=category_id)}}" method='post'>
+                    <!-- Name -->
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Name:</label>
+                        <input type="text" size=30 name='name' class="form-control" id="exampleFormControlInput1" placeholder="{{category_name}}">
+                    </div>
+                    </br>
+                    <!-- Confirm / Cancel buttons -->
+                    <div class="container">
+                        <div class="row">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a href="{{url_for('showCatalog')}}" class="btn btn-primary">Cancel</a>
+                            </div>
+                        </div>    
+                    </div>                
+                </form>
+            </div>
+        </div>
+    </div>
         
 {% endblock %}
