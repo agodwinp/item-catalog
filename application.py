@@ -256,7 +256,9 @@ def editItem(category_id, item_id): # UPDATE
             user = login_session['username']
             categories = session.query(Category).all()
             item_name=editedItem.title
-            return render_template('editItem.html', categories=categories, category_id=category_id, item_id=item_id, item_name=item_name, STATE=state)
+            category = session.query(Category).filter_by(id=category_id).one()
+            category_name = category.name
+            return render_template('editItem.html', categories=categories, category_name=category_name, category_id=category_id, item_id=item_id, item_name=item_name, STATE=state)
         except KeyError:
             flash("Please log in!")
             return redirect(url_for('showItems', category_id=category_id))
