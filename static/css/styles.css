@@ -75,3 +75,8 @@ a:hover {
 div.form-group {
     text-align: left;
 }
+
+div.form-group#deleteButtons {
+    align-content: center;
+    text-align: center;
+}

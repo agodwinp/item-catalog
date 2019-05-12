@@ -2,13 +2,36 @@
 {% block content %}
 {% include "header.html" %}
 
-    <form action="{{url_for('deleteCategory', category_id=category_id)}}" method='post'>
-        <p> Are you sure you want to <i><u>delete</u></i> {{category_name}}</p>
-    </br>
-    <input type="submit" value="Delete">
-    </br>
-    <a href="{{url_for('showCatalog')}}">Cancel</a>
-    </form>
-    </body>
+    </br></br>
+    <div class="container" style="width: 50rem;">
+        <div class="card">
+            <div class="card-body">
+                <h3>Delete Category</h3>
+                </br>
+                <form class="addForm" action="{{url_for('deleteCategory', category_id=category_id)}}" method='post'>
+                    <!-- Message -->
+                    <div class="form-group">
+                        <div class="container">
+                            <h5> Are you sure you want to <i><u>delete</u></i> {{category_name}}?</h5>
+                        </div>
+                    </div>
+                    </br>
+                    <!-- Confirm / Cancel buttons -->
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm"></div>
+                            <div class="col-sm">
+                                <div class="form-group" id="deleteButtons">
+                                    <button type="submit" class="btn btn-primary">Delete</button>
+                                    <a href="{{url_for('showCatalog')}}" class="btn btn-primary">Cancel</a>
+                                </div>
+                            </div>
+                            <div class="col-sm"></div>
+                        </div>
+                    </div>                
+                </form>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
