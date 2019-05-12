@@ -19,10 +19,13 @@
             <div class="card-columns">
                 {% for i in categories %}
                     <div class="card" style="width: 18rem;">
-                        <img src="..." class="card-img-top" alt="...">
+                        {% if i.image %}
+                            <img src="../static/images/{{i.image}}" class="card-img-top" alt="...">
+                        {% else %}
+                            <img src="../static/images/alternative.jpg" class="card-img-top" alt="...">
+                        {% endif %}
                         <div class="card-body">
                             <h5 class="card-title"><a href = "{{url_for('showItems', category_id = i.id)}}"> {{i.name}} </a></h5>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                             <a href="{{url_for('editCategory', category_id = i.id)}}" class="btn btn-primary btn-sm editButton" style="display: none;">Edit</a>
                             <a href="{{url_for('deleteCategory', category_id = i.id)}}" class="btn btn-primary btn-sm deleteButton" style="display: none;">Delete</a>
                         </div>
