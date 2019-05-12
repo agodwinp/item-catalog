@@ -2,27 +2,22 @@
 {% block content %}
 {% include "header.html" %}
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-            <p>{{message}}</p>
-        {% endfor %}
-    {% endif %}
-    {% endwith %}
     </br></br>
     <div class="container">
-        <a href = "{{url_for('newCategory')}}" id="addButton" style="display: none;">Add Category</a>
+        <button type="button" class="btn btn-secondary btn-lg btn-block">
+            <a href = "{{url_for('newCategory')}}" id="addButton" style="display: none;">Add Category</a>
+        </button>
     </div>
     </br></br>
     {% if categories %}
         <div class="container-fluid">
             <div class="card-columns">
                 {% for i in categories %}
-                    <div class="card" style="width: 18rem;">
+                    <div class="card" style="width: 18rem;" id="cardContainer">
                         {% if i.image %}
-                            <img src="../static/images/{{i.image}}" class="card-img-top" alt="...">
+                            <img src="../static/images/{{i.image}}" class="card-img-top" alt="..." style="opacity: 0.8;">
                         {% else %}
-                            <img src="../static/images/alternative.jpg" class="card-img-top" alt="...">
+                            <img src="../static/images/alternative.jpg" class="card-img-top" alt="..." style="opacity: 0.8;">
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title"><a href = "{{url_for('showItems', category_id = i.id)}}"> {{i.name}} </a></h5>

@@ -17,12 +17,12 @@ a {
 }
 
 a:hover {
-    color: grey;
-  }
+    color: white;;
+}
 
-  .abcRioButton.abcRioButtonLightBlue { 
-      margin: 0 auto;
-    }
+.abcRioButton.abcRioButtonLightBlue { 
+    margin: 0 auto;
+}
 
 /* Background colours */
 
@@ -79,4 +79,21 @@ div.form-group {
 div.form-group#deleteButtons {
     align-content: center;
     text-align: center;
+}
+
+/* Flash messages */
+
+#flashContainer {
+    height: 50px;
+    background-color: #F7A764;
+    opacity: 0.5;
+    border-radius: 10px;
+    padding: 10;
+    text-emphasis-color: black;
+}
+
+/* Cards */
+
+div.card {
+    background-color: white;
 }
