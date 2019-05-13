@@ -14,14 +14,35 @@
 		<!-- Load CSS -->
 		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/styles.css')}}">
     </head>
-    <body>
-        <a href = "{{url_for('showCatalog')}}">Enter</a>
-        </br>
-        <!-- Google Sign-In button -->
-		<div class="g-signin2" data-onsuccess="onSignIn" id="signInButton"></div>
-		<div id="result"></div>
-		<!-- Add a sign out button to sign out of App -->
-		<a href="#" onclick="signOut();" id="signOutButton" style="display: none;">Sign out</a>
+    <body id="landingPage">
+		<!-- Logo for landing page -->
+		<div class="container">
+			<img src="../static/images/logo.png" width=75%>
+		</div>
+		<div class="container">
+			<div class="row justify-content-md-center">
+				<div class="col-4"></div>
+				<!-- Enter button -->
+				<div class="col-2">
+					<button type="button" class="btn btn-light">
+						<a href = "{{url_for('showCatalog')}}">Enter</a>
+					</button>
+				</div>
+				<!-- Google Sign In button -->
+				<div class="col-2">
+					<div class="g-signin2" data-onsuccess="onSignIn" id="signInButton"></div>
+					<!-- Add a sign out button to sign out of App -->
+					<button type="button" class="btn btn-light" id="signOutButton1" style="display: none;">
+						<a href="#" onclick="signOut();" id="signOutButton2" style="display: none;">Sign out</a>
+					</button>
+				</div>
+				<div class="col-4"></div>
+			</div>
+		</div>
+		</br>
+		<div class="container">
+			<div><p class="highlightText" id="result"></p></div>
+		</div>
 		<!-- On submission, we need to send a callback function -->
 		<script type="text/javascript">
 			function onSignIn(googleUser) {
@@ -30,7 +51,8 @@
 				if (id_token) {
 					// Hide the sign in button now that the user is authorised
 					$('#signInButton').attr('style', 'display: none');
-                    $('#signOutButton').attr('style', 'display: True');
+					$('#signOutButton1').attr('style', 'display: True');
+					$('#signOutButton2').attr('style', 'display: True');
 					// Send a post request
 					$.ajax({
 						type: 'POST',
@@ -55,7 +77,8 @@
 		<script>
 			function signOut() {
                 $('#signInButton').attr('style', 'display: True');
-				$('#signOutButton').attr('style', 'display: none');
+				$('#signOutButton1').attr('style', 'display: none');
+				$('#signOutButton2').attr('style', 'display: none');
 				var auth2 = gapi.auth2.getAuthInstance();
 				auth2.signOut().then(function () {
 					// Send a post request
