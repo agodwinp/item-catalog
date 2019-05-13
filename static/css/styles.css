@@ -27,7 +27,6 @@ a:hover {
 /* Background colours */
 
 #headerBar {
-    background-color: dodgerblue;
     padding: 0px;
     margin: 0px;
 }
@@ -96,4 +95,42 @@ div.form-group#deleteButtons {
 
 div.card {
     background-color: white;
+}
+
+/* Backgrounds */
+
+#landingPage {
+    background-color: #455D7A;
+}
+
+#mainBody {
+    background-color: #E8E8E8;
+}
+
+/* Redirect text */
+
+.highlightText {
+    color: white;
+}
+
+/* Navbar */
+
+.navbar {
+    background-color: #455D7A;
+}
+
+/* Button */
+
+#editButton {
+    background-color: grey;
+    border: 0px;
+}
+
+#deleteButton {
+    background-color: #F9AD66;
+    border: 0px;
+}
+
+#editButton:hover, #deleteButton:hover {
+    background-color: #455D7A;
 }

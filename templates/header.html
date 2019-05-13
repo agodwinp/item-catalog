@@ -1,33 +1,29 @@
-<div class="container-fluid" id="headerBar">
-    </br>
-    <div class="container-fluid">
-        <div class="row justify-content-md-center">
-            <div class="col">
-                <!-- Add Home button -->
-                <a href="{{url_for('showCatalog')}}">Home</a>
-            </div>
-            <div class="col-6"></div>
-            <div class="col">
-                <!-- Add sign in button -->
-                <div class="g-signin2" data-onsuccess="onSignIn" onclick="signIn();" id="signInButton"></div>
-                <!-- Add a sign out button to sign out of App -->
-                <a href="#" onclick="signOut();" id="signOutButton" style="display: none;">Sign out</a>
-                <!-- Result -->
-                <div id="result"></div>
+<nav class="navbar">
+    <div class=container-fluid id=headerBar>
+        <!-- Add Home button -->
+        <div class="d-flex justify-content-start">
+            <div class=col>
+                <a class="highlightText" href="{{url_for('showCatalog')}}">Home</a>
             </div>
         </div>
+        <div class="d-flex justify-content-center">
+            <img class="highlightText" src="../static/images/navbar_logo.png" alt="Excellerate" height=50>
+        </div>
+        <!-- Add Sign In / Out button -->
+        <div class="d-flex justify-content-end">
+            <div class="g-signin2" data-onsuccess="onSignIn" onclick="signIn();" id="signInButton"></div>
+            <!-- Add a sign out button to sign out of App -->
+            <a href="#" class="highlightText" onclick="signOut();" id="signOutButton" style="display: none;">Sign out</a>
+            <!-- Result -->
+            <div id="result"></div>
+        </div>
     </div>
-    <div class="container">
-        <h1>Excellerate</h1>
-        <h3>Take your sports equipment to the next level</h3>
-        </br>
-    </div>
-</div>
+</nav>
 
 {% with messages = get_flashed_messages() %}
 {% if messages %}
     {% for message in messages %}
-        </br></br>
+        </br>
         <div class="container">
             <div class="alert alert-warning" role="alert">
                 <strong>{{message}}</strong>
