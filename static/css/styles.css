@@ -121,7 +121,7 @@ div.card {
 
 /* Button */
 
-#editButton {
+#editButton, #addButton {
     background-color: grey;
     border: 0px;
 }
@@ -131,6 +131,6 @@ div.card {
     border: 0px;
 }
 
-#editButton:hover, #deleteButton:hover {
+#editButton:hover, #deleteButton:hover, #addButton:hover {
     background-color: #455D7A;
 }
