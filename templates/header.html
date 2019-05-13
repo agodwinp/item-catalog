@@ -1,13 +1,10 @@
 <nav class="navbar">
     <div class=container-fluid id=headerBar>
-        <!-- Add Home button -->
+        <!-- Logo & Home button -->
         <div class="d-flex justify-content-start">
-            <div class=col>
-                <a class="highlightText" href="{{url_for('showCatalog')}}">Home</a>
-            </div>
-        </div>
-        <div class="d-flex justify-content-center">
-            <img class="highlightText" src="../static/images/navbar_logo.png" alt="Excellerate" height=50>
+            <a class="button" href="{{url_for('showCatalog')}}">
+                <img class="highlightText" src="../static/images/navbar_logo.png" alt="Excellerate" height=50>
+            </a>
         </div>
         <!-- Add Sign In / Out button -->
         <div class="d-flex justify-content-end">
