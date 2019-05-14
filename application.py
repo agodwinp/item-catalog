@@ -153,7 +153,7 @@ def welcome():
 def showCatalog(): # READ
     state = generateState(login_session, 'state')
     categories = session.query(Category).all()
-    return render_template('allCategories.html', categories=categories, STATE=state)
+    return render_template('allCategories.html', categories=categories, STATE=state, session=login_session)
 
 # PROTECTED
 @app.route('/catalog/new', methods=['GET', 'POST'])
@@ -301,9 +301,6 @@ def editItem(category_id, item_id): # UPDATE
             item_name=editedItem.title
             category = session.query(Category).filter_by(id=category_id).one()
             category_name = category.name
-
-
-
             return render_template('editItem.html', categories=categories, category_name=category_name, category_id=category_id, item_id=item_id, item_name=item_name, STATE=state)
         except KeyError:
             flash("Please log in!")
