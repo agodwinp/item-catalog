@@ -40,7 +40,7 @@ def catalogJSON():
 @app.route('/catalog/<int:category_id>/items/json')
 def categoryJSON(category_id):
     category_items = session.query(Item).filter_by(category_id=category_id)
-    return jsonify(Category=[i.serialize for i in category_items])
+    return jsonify(Items=[i.serialize for i in category_items])
 
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/json')
 def itemsJSON(category_id, item_id):
