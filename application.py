@@ -11,9 +11,15 @@ import random, string, json, requests, httplib2
 from flask_login import logout_user
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
+from werkzeug.utils import secure_filename
+import os
+
+UPLOAD_FOLDER = '/static/images'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 # Instantiate Flask application and database session
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 auth = HTTPBasicAuth()
 engine = create_engine('sqlite:///catalog.db', connect_args={'check_same_thread':False})
 Base.metadata.bind = engine
@@ -29,6 +35,10 @@ def generateState(sess, key):
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
     sess[key] = state
     return state
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # JSON API Endpoints
 @app.route('/catalog/json')
@@ -159,11 +169,22 @@ def newCategory(): # CREATE
     else:
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
-        newCategory = Category(name=request.form['name'], user_id=user_id)
-        session.add(newCategory)
-        session.commit()
-        flash("New category added!")
-        return redirect(url_for('showCatalog'))
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            newCategory = Category(name=request.form['name'], user_id=user_id)
+            session.add(newCategory)
+            session.commit()
+            flash("New category added!")
+            return redirect(url_for('showCatalog'))
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            newCategory = Category(name=request.form['name'], image=filename, user_id=user_id)
+            session.add(newCategory)
+            session.commit()
+            flash("New category added!")
+            return redirect(url_for('showCatalog'))
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/edit', methods=['GET', 'POST'])
@@ -232,7 +253,9 @@ def showItems(category_id): # READ
     # have an accordian here to expand details
     items = session.query(Item).filter_by(category_id=category_id).all()
     category = session.query(Category).filter_by(id=category_id).one()
-    return render_template('showItems.html', items=items, category_id=category_id, category=category, STATE=state)
+    user = session.query(User).filter_by(id=category.user_id).one()
+    user_email = user.email
+    return render_template('showItems.html', items=items, category_id=category_id, category=category, STATE=state, session=login_session, user_email=user_email)
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/items/new', methods=['GET', 'POST'])

@@ -30,7 +30,7 @@
 					$('.btn.btn-primary.btn-sm.editButton').attr('style', 'display: True');
 					$('.btn.btn-primary.btn-sm.deleteButton').attr('style', 'display: True');
 					// Send a post request
-					var anything = $.ajax({
+					$.ajax({
 						type: 'POST',
 						url: "/login?state={{STATE}}",
 						processData: false,
@@ -65,7 +65,7 @@
 						contentType: 'application/octet-stream; charset=utf-8',
 						success: function(result) {
 							if (result) {
-								$('#result').html('Login Successful </br>' + result + '</br> Redirecting...')
+								//$('#result').html('Login Successful </br>' + result + '</br> Redirecting...')
 								setTimeout(function() {
 									window.location.href = '/catalog';
 								}, 500);

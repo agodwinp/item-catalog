@@ -8,11 +8,16 @@
             <div class="card-body">
                 <h3>Add Category</h3>
                 </br>
-                <form class="addForm" action="{{url_for('newCategory')}}" method='post'>
+                <form class="addForm" action="{{url_for('newCategory')}}" method='post' enctype=multipart/form-data>
                     <!-- Name -->
                     <div class="form-group">
                         <label for="exampleFormControlInput1">Name:</label>
                         <input type="text" size=30 name='name' class="form-control" id="exampleFormControlInput1" placeholder="New category...">
+                    </div>
+                    <!-- Image upload -->
+                    <div class="form-group">
+                        <label for="exampleFormControlFile1">Image:</label>
+                        <input type="file" class="form-control-file" id="exampleFormControlFile1">
                     </div>
                     </br>
                     <!-- Confirm / Cancel buttons -->

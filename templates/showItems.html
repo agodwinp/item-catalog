@@ -20,10 +20,12 @@
         </div>
     </div>
     <!-- Add item button -->
+    {% if session['email'] == user_email %}
     </br></br>
     <div class="container">
         <a href="{{url_for('newItem', category_id=category_id)}}" class="btn btn-primary" id="addButton" id="addButton" style="display: none;">Add Item</a>
     </div>
+    {% endif %}
     </br></br>
     <!-- Show items with Accordian -->
     <div class="container">
@@ -46,8 +48,10 @@
                                 </br>
                                 <div class="row">
                                     <div class="container">
-                                        <a href="{{url_for('editItem', category_id=category_id, item_id=i.id)}}" class="btn btn-primary btn-sm editButton" id="editButton" style="display: none;">Edit Item</a>
-                                        <a href="{{url_for('deleteItem', category_id=category_id, item_id=i.id)}}" class="btn btn-primary btn-sm deleteButton" id="deleteButton" style="display: none;">Delete Item</a>
+                                        {% if session['email'] == user_email %}
+                                            <a href="{{url_for('editItem', category_id=category_id, item_id=i.id)}}" class="btn btn-primary btn-sm editButton" id="editButton" style="display: none;">Edit Item</a>
+                                            <a href="{{url_for('deleteItem', category_id=category_id, item_id=i.id)}}" class="btn btn-primary btn-sm deleteButton" id="deleteButton" style="display: none;">Delete Item</a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
