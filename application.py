@@ -56,7 +56,7 @@ def landingPage():
         return render_template("loginPage.html", STATE=state)
     if request.method == 'POST':
         try:
-            print(1)
+            #print(1)
             # Check the state variable for extra security, state from ajax request should be the same as random string above
             if login_session['state'] != request.args.get('state'):
                 response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -64,37 +64,37 @@ def landingPage():
                 return response
             # If so, then retrieve token sent by client
             token = request.data
-            print(token)
-            print(2.1)
+            #print(token)
+            #print(2.1)
             # Request an access token from the Google API
             idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), CLIENT_ID)
-            print(2.2)
-            #url = ('https://oauth2.googleapis.com/tokeninfo?id_token=%s' % token)
-            url = ("https://oauth2.googleapis.com/token?id_token=%s" % token)
+            #print(2.2)
+            url = ('https://oauth2.googleapis.com/tokeninfo?id_token=%s' % token)
+            #url = ("https://oauth2.googleapis.com/token?id_token=%s" % token)
             h = httplib2.Http()
             result = json.loads(h.request(url, 'GET')[1])
-            print(2.3)
+            #print(2.3)
             # If there was an error in the access token info, abort
-            print(3)
+            #print(3)
             if result.get('error') is not None:
                 response = make_response(json.dumps(result.get('error')), 500)
                 response.headers['Content-Type'] = 'application/json'
                 return response
-            print(4)
+            #print(4)
             # Verify that the access token is used for the intended user
             user_google_id = idinfo['sub']
             if result['sub'] != user_google_id:
                 response = make_response(json.dumps("Token's user ID does not match given user ID."), 401)
                 response.headers['Content-Type'] = 'application/json'
                 return response
-            print(5)
+            #print(5)
             # Verify that the access token is valid for this app
             if result['aud'] != CLIENT_ID:
                 response = make_response(json.dumps("Token's client ID does not match apps."), 401)
                 print("Token's client ID does not match apps.")
                 response.headers['Content-Type'] = 'application/json'
                 return response
-            print(6)
+            #print(6)
             # Check if the user is already logged in
             stored_access_token = login_session.get('access_token')
             stored_user_google_id = login_session.get('user_google_id')
@@ -102,7 +102,7 @@ def landingPage():
                 response = make_response(json.dumps("Current user is already connected."), 200)
                 response.headers['Content-Type'] = 'application/json'
                 return response
-            print(7)
+            #print(7)
             # Store the access token in the session cookie for later use
             login_session['access_token'] = idinfo
             login_session['user_google_id'] = user_google_id
@@ -111,19 +111,19 @@ def landingPage():
             login_session['picture'] = idinfo['picture']
             login_session['email'] = idinfo['email']
             # Check if this user exists in database
-            print(8)
+            #print(8)
             try:
                 session.query(User).filter_by(email=login_session['email']).one()
             except:
                 newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
                 session.add(newUser)
                 session.commit()
-            print(9)
+            #print(9)
             return "Successful"
         except ValueError:
             # Invalid token
-            #return "ValueError... See trace."
-            pass
+            return "ValueError... See trace."
+            #pass
 
 @app.route('/logout', methods=['POST'])
 def logout():
