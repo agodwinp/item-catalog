@@ -241,6 +241,13 @@ def newItem(category_id): # CREATE
     if request.method == 'GET':
         try:
             user = login_session['username']
+            owner = session.query(User).filter_by(email=login_session['email']).one()
+            user_id = owner.id
+            category = session.query(Category).filter_by(id=category_id).one()
+            # Double check that user is authorised to make an item in this category
+            if category.user_id != user_id:
+                flash("Please log in!")
+                return redirect(url_for('showItems', category_id=category_id))
             return render_template('newItem.html', category_id=category_id, STATE=state)
         except KeyError:
             flash("Please log in!")
@@ -271,6 +278,9 @@ def editItem(category_id, item_id): # UPDATE
             item_name=editedItem.title
             category = session.query(Category).filter_by(id=category_id).one()
             category_name = category.name
+
+
+
             return render_template('editItem.html', categories=categories, category_name=category_name, category_id=category_id, item_id=item_id, item_name=item_name, STATE=state)
         except KeyError:
             flash("Please log in!")
