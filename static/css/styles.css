@@ -107,7 +107,7 @@ div.card {
 }
 
 #mainBody {
-    background-color: #E8E8E8;
+    background-color: #f2f2f2;
 }
 
 /* Redirect text */
@@ -162,10 +162,16 @@ a.button {
 
 body {
     opacity: 1;
-    transition: 0.7s opacity;
+    transition: 1s opacity;
 }
   
 body.fade {
     opacity: 0;
     transition: none;
+}
+
+/* Card highlighting */
+
+.card-columns .card:hover {
+    background: #e6e6e6;
 }
