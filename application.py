@@ -232,8 +232,7 @@ def showItems(category_id): # READ
     # have an accordian here to expand details
     items = session.query(Item).filter_by(category_id=category_id).all()
     category = session.query(Category).filter_by(id=category_id).one()
-    category_name = category.name
-    return render_template('showItems.html', items=items, category_id=category_id, category_name=category_name, STATE=state)
+    return render_template('showItems.html', items=items, category_id=category_id, category=category, STATE=state)
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/items/new', methods=['GET', 'POST'])
