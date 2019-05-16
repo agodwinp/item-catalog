@@ -14,7 +14,7 @@ from google.auth.transport import requests as google_requests
 from werkzeug.utils import secure_filename
 import os
 
-UPLOAD_FOLDER = '/static/images'
+UPLOAD_FOLDER = './static/images'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 # Instantiate Flask application and database session
@@ -45,6 +45,8 @@ def allowed_file(filename):
 def catalogJSON():
     categories = session.query(Category).all()
     return jsonify(Categories=[i.serialize for i in categories])
+
+# need to have an nested for loop within
 
 @app.route('/catalog/<int:category_id>/json')
 @app.route('/catalog/<int:category_id>/items/json')
@@ -170,21 +172,24 @@ def newCategory(): # CREATE
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         # check if the post request has the file part
-        if 'file' not in request.files:
+        if 'image' not in request.files:
+            print("No file found")
             newCategory = Category(name=request.form['name'], user_id=user_id)
             session.add(newCategory)
             session.commit()
             flash("New category added!")
             return redirect(url_for('showCatalog'))
-        file = request.files['file']
+        file = request.files['image']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(app.config['UPLOAD_FOLDER'] + filename)
             newCategory = Category(name=request.form['name'], image=filename, user_id=user_id)
             session.add(newCategory)
             session.commit()
             flash("New category added!")
             return redirect(url_for('showCatalog'))
+            # when deleting a category, make sure that the image is deleted from static/images too
+            # in css, resize pictures to a consistent size of width and height. Use %.
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/edit', methods=['GET', 'POST'])

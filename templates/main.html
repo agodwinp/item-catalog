@@ -26,39 +26,50 @@
 				document.body.className = '';
 			});
 		</script>
-		<script type="text/javascript">
-			function onSignIn(googleUser) {
-				// Get the user id token after the user signs into their account
-				var id_token = googleUser.getAuthResponse().id_token;
-				if (id_token) {
-					// Hide the sign in button now that the user is authorised
-					$('#signInButton').attr('style', 'display: none');
-					$('#signOutButton').attr('style', 'display: True');
-					$('#addButton').attr('style', 'display: True');
-					$('.btn.btn-primary.btn-sm.editButton').attr('style', 'display: True');
-					$('.btn.btn-primary.btn-sm.deleteButton').attr('style', 'display: True');
-					// Send a post request
-					$.ajax({
-						type: 'POST',
-						url: "/login?state={{STATE}}",
-						processData: false,
-						data: id_token,
-						contentType: 'application/octet-stream; charset=utf-8',
-						success: function(result) {
-							if (result) {
-								console.log("Redirection 1")
-								setTimeout(function() {
-									//window.location.href = '/#';
-								}, 500);
-								console.log("Redirection 2")
-							} else {
-								$('#result').html('Failed to make a server-side call. Check your configuration and console.');
+		{% if not session['user_google_id'] %}
+			<script type="text/javascript"> 
+				function onSignIn(googleUser) {
+					// Get the user id token after the user signs into their account
+					var id_token = googleUser.getAuthResponse().id_token;
+					if (id_token) {
+						// Hide the sign in button now that the user is authorised
+						$('#signInButton').attr('style', 'display: none');
+						$('#signOutButton').attr('style', 'display: True');
+						$('#addButton').attr('style', 'display: True');
+						$('.btn.btn-primary.btn-sm.editButton').attr('style', 'display: True');
+						$('.btn.btn-primary.btn-sm.deleteButton').attr('style', 'display: True');
+						// Send a post request
+						var googleSignIn = $.ajax({
+												type: 'POST',
+							url: "/login?state={{STATE}}",
+							processData: false,
+							data: id_token,
+							contentType: 'application/octet-stream; charset=utf-8',
+							success: function(result) {
+								if (result) {
+									console.log("Redirection 1")
+									setTimeout(function() {
+										window.location.href = '/welcome';
+									}, 500);
+									console.log("Redirection 2")
+								} else {
+									$('#result').html('Failed to make a server-side call. Check your configuration and console.');
+								}
 							}
-						}
-					});
+						});
+					}
 				}
-			}
-		</script>
+			</script>
+		{% else %}
+			<script>
+				// Hide the sign in button now that the user is authorised
+				$('#signInButton').attr('style', 'display: none');
+				$('#signOutButton').attr('style', 'display: True');
+				$('#addButton').attr('style', 'display: True');
+				$('.btn.btn-primary.btn-sm.editButton').attr('style', 'display: True');
+				$('.btn.btn-primary.btn-sm.deleteButton').attr('style', 'display: True');
+			</script>
+		{% endif %}
 		<script>
 			function signOut() {
                 $('#signInButton').attr('style', 'display: True');
