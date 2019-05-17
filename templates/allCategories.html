@@ -13,13 +13,16 @@
                 {% for i in categories %}
                     <div class="card" style="width: 18rem;" id="cardContainer">
                         {% if i.image %}
-                            <img src="../static/images/{{i.image}}" class="card-img-top" alt="..." style="opacity: 0.8;">
+                            <div id="imgContainer">
+                                <img id="cardImg" src="../static/images/{{i.image}}" class="card-img-top" alt="..." style="opacity: 0.8;">
+                            </div>
                         {% else %}
-                            <img src="../static/images/alternative.jpg" class="card-img-top" alt="..." style="opacity: 0.8;">
+                            <div id="imgContainer">
+                                <img id="cardImg" src="../static/images/alternative.jpg" class="card-img-top" alt="..." style="opacity: 0.8;">
+                            </div>
                         {% endif %}
                         <div class="card-body">
                             <h5 class="card-title"><a id="cardTitle" href = "{{url_for('showItems', category_id = i.id)}}"> {{i.name}} </a></h5>
-                            
                         </div>
                     </div>
                 {% endfor %}

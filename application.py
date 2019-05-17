@@ -14,7 +14,7 @@ from google.auth.transport import requests as google_requests
 from werkzeug.utils import secure_filename
 import os
 
-UPLOAD_FOLDER = './static/images'
+UPLOAD_FOLDER = './static/images/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 # Instantiate Flask application and database session
@@ -232,10 +232,9 @@ def deleteCategory(category_id):
         session.delete(deletedCategory)
         session.commit()
         flash("Category successfully deleted!")
-        image_to_delete = deleteCategory.image
+        image_to_delete = deletedCategory.image
         if os.path.exists(app.config['UPLOAD_FOLDER'] + image_to_delete):
-            print("delete")
-            os.remove(image_to_delete)
+            os.remove(app.config['UPLOAD_FOLDER'] + image_to_delete)
         return redirect(url_for('showCatalog'))
 
 # PROTECTED
