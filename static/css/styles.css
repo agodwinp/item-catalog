@@ -169,6 +169,16 @@ a.button {
     padding: auto;
 }
 
+#enterCatalog {
+    background-color: #455D7A;
+    color: white;
+    border: 0;
+}
+
+.btn-file input[type=file] {
+    background-color: black;
+}
+
 /* Fade in */
 
 body {
@@ -185,4 +195,11 @@ body.fade {
 
 .card-columns .card:hover {
     background: #e6e6e6;
+}
+
+/* Welcome */
+
+#welcome {
+    width: 25%;
+    height: 25%;
 }

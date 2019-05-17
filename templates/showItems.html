@@ -26,7 +26,11 @@
                 {% endif %}
             </div>
             <div class="col-2">
-                <img src="../../static/images/{{category.image}}" style="height: 80px; border-radius: 50px; -webkit-border-radius: 50px; -moz-border-radius: 50px;">
+                {% if category.image %}
+                    <img src="../../static/images/{{category.image}}" style="height: 80px; border-radius: 50px; -webkit-border-radius: 50px; -moz-border-radius: 50px;">
+                {% else %}
+                    <img src="../../static/images/alternative.jpg" style="height: 80px; border-radius: 50px; -webkit-border-radius: 50px; -moz-border-radius: 50px;">
+                {% endif %}
             </div>
             <div class="col-4"></div>
         </div>

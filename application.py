@@ -159,8 +159,7 @@ def newCategory():
         user = session.query(User).filter_by(email=login_session['email']).one()
         user_id = user.id
         # check if the post request has the file part
-        if 'image' not in request.files:
-            print("No file found")
+        if not request.files['image']:
             newCategory = Category(name=request.form['name'], user_id=user_id)
             session.add(newCategory)
             session.commit()
@@ -175,8 +174,6 @@ def newCategory():
             session.commit()
             flash("New category added!")
             return redirect(url_for('showCatalog'))
-            # when deleting a category, make sure that the image is deleted from static/images too
-            # in css, resize pictures to a consistent size of width and height. Use %.
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/edit', methods=['GET', 'POST'])
@@ -235,10 +232,12 @@ def deleteCategory(category_id):
         session.delete(deletedCategory)
         session.commit()
         flash("Category successfully deleted!")
-        image_to_delete = deletedCategory.image
-        if os.path.exists(app.config['UPLOAD_FOLDER'] + image_to_delete):
-            os.remove(app.config['UPLOAD_FOLDER'] + image_to_delete)
+        if deletedCategory.image:
+            image_to_delete = deletedCategory.image
+            if os.path.exists(app.config['UPLOAD_FOLDER'] + image_to_delete):
+                os.remove(app.config['UPLOAD_FOLDER'] + image_to_delete)
         return redirect(url_for('showCatalog'))
+        
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>')
