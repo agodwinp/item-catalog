@@ -46,7 +46,7 @@ def catalogJSON():
     categories = session.query(Category).all()
     return jsonify(Categories=[i.serialize for i in categories])
 
-# need to have an nested for loop within
+#### need to have an nested for loop within
 
 @app.route('/catalog/<int:category_id>/json')
 @app.route('/catalog/<int:category_id>/items/json')
@@ -76,37 +76,28 @@ def landingPage():
                 return response
             # If so, then retrieve token sent by client
             token = request.data
-            #print(token)
-            #print(2.1)
             # Request an access token from the Google API
             idinfo = id_token.verify_oauth2_token(token, google_requests.Request(), CLIENT_ID)
-            #print(2.2)
             url = ('https://oauth2.googleapis.com/tokeninfo?id_token=%s' % token)
-            #url = ("https://oauth2.googleapis.com/token?id_token=%s" % token)
             h = httplib2.Http()
             result = json.loads(h.request(url, 'GET')[1])
-            #print(2.3)
             # If there was an error in the access token info, abort
-            #print(3)
             if result.get('error') is not None:
                 response = make_response(json.dumps(result.get('error')), 500)
                 response.headers['Content-Type'] = 'application/json'
                 return response
-            #print(4)
             # Verify that the access token is used for the intended user
             user_google_id = idinfo['sub']
             if result['sub'] != user_google_id:
                 response = make_response(json.dumps("Token's user ID does not match given user ID."), 401)
                 response.headers['Content-Type'] = 'application/json'
                 return response
-            #print(5)
             # Verify that the access token is valid for this app
             if result['aud'] != CLIENT_ID:
                 response = make_response(json.dumps("Token's client ID does not match apps."), 401)
                 print("Token's client ID does not match apps.")
                 response.headers['Content-Type'] = 'application/json'
                 return response
-            #print(6)
             # Check if the user is already logged in
             stored_access_token = login_session.get('access_token')
             stored_user_google_id = login_session.get('user_google_id')
@@ -114,7 +105,6 @@ def landingPage():
                 response = make_response(json.dumps("Current user is already connected."), 200)
                 response.headers['Content-Type'] = 'application/json'
                 return response
-            #print(7)
             # Store the access token in the session cookie for later use
             login_session['access_token'] = idinfo
             login_session['user_google_id'] = user_google_id
@@ -123,26 +113,20 @@ def landingPage():
             login_session['picture'] = idinfo['picture']
             login_session['email'] = idinfo['email']
             # Check if this user exists in database
-            #print(8)
             try:
                 session.query(User).filter_by(email=login_session['email']).one()
             except:
                 newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
                 session.add(newUser)
                 session.commit()
-            #print(9)
             return "Successful"
         except ValueError:
             # Invalid token
             return "ValueError... See trace."
-            #pass
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    #state = generateState(login_session, 'state')
     login_session.clear()
-    #return render_template("loginPage.html", STATE=state)
-    #return redirect(url_for('showCatalog'))
     return "Logged out"
 
 @app.route('/welcome')
@@ -152,14 +136,14 @@ def welcome():
     return render_template('welcome.html', name=name, picture=picture)
 
 @app.route('/catalog')
-def showCatalog(): # READ
+def showCatalog():
     state = generateState(login_session, 'state')
     categories = session.query(Category).all()
     return render_template('allCategories.html', categories=categories, STATE=state, session=login_session)
 
 # PROTECTED
 @app.route('/catalog/new', methods=['GET', 'POST'])
-def newCategory(): # CREATE
+def newCategory():
     state = generateState(login_session, 'state')
     if request.method == 'GET':
         try:
@@ -193,7 +177,7 @@ def newCategory(): # CREATE
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/edit', methods=['GET', 'POST'])
-def editCategory(category_id): # UPDATE
+def editCategory(category_id):
     state = generateState(login_session, 'state')
     if request.method == 'GET':
         # Check if they are logged in
@@ -224,7 +208,7 @@ def editCategory(category_id): # UPDATE
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/delete', methods=['GET','POST'])
-def deleteCategory(category_id): # DELETE
+def deleteCategory(category_id):
     state = generateState(login_session, 'state')
     if request.method == 'GET':
         try:
@@ -248,12 +232,16 @@ def deleteCategory(category_id): # DELETE
         session.delete(deletedCategory)
         session.commit()
         flash("Category successfully deleted!")
+        image_to_delete = deleteCategory.image
+        if os.path.exists(app.config['UPLOAD_FOLDER'] + image_to_delete):
+            print("delete")
+            os.remove(image_to_delete)
         return redirect(url_for('showCatalog'))
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>')
 @app.route('/catalog/<int:category_id>/items')
-def showItems(category_id): # READ
+def showItems(category_id):
     state = generateState(login_session, 'state')
     # have an accordian here to expand details
     items = session.query(Item).filter_by(category_id=category_id).all()
@@ -264,7 +252,7 @@ def showItems(category_id): # READ
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/items/new', methods=['GET', 'POST'])
-def newItem(category_id): # CREATE
+def newItem(category_id):
     state = generateState(login_session, 'state')
     if request.method == 'GET':
         try:
@@ -296,7 +284,7 @@ def newItem(category_id): # CREATE
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/edit', methods=['GET', 'POST'])
-def editItem(category_id, item_id): # UPDATE
+def editItem(category_id, item_id):
     state = generateState(login_session, 'state')
     editedItem = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'GET':
@@ -327,9 +315,9 @@ def editItem(category_id, item_id): # UPDATE
         flash("Item successfully edited!")
         return redirect(url_for('showItems', category_id=category_id))
 
-# PROTECTED
+
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/delete', methods=['GET', 'POST'])
-def deleteItem(category_id, item_id): # DELETE
+def deleteItem(category_id, item_id):
     state = generateState(login_session, 'state')
     deletedItem = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'GET':
@@ -351,6 +339,7 @@ def deleteItem(category_id, item_id): # DELETE
         session.commit()
         flash("Item successfully deleted!")
         return redirect(url_for('showItems', category_id=category_id))
+
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
