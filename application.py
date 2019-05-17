@@ -43,10 +43,14 @@ def allowed_file(filename):
 # JSON API Endpoints
 @app.route('/catalog/json')
 def catalogJSON():
+    data = {}
     categories = session.query(Category).all()
-    return jsonify(Categories=[i.serialize for i in categories])
-
-#### need to have an nested for loop within
+    for i in categories:
+        items = session.query(Item).filter_by(category_id=i.id)
+        data[i.name] = {"id":i.id, "Items":[j.serialize for j in items]}
+    json_data = {}
+    json_data['Category'] = [data]
+    return jsonify(json_data)
 
 @app.route('/catalog/<int:category_id>/json')
 @app.route('/catalog/<int:category_id>/items/json')
@@ -68,7 +72,6 @@ def landingPage():
         return render_template("loginPage.html", STATE=state)
     if request.method == 'POST':
         try:
-            #print(1)
             # Check the state variable for extra security, state from ajax request should be the same as random string above
             if login_session['state'] != request.args.get('state'):
                 response = make_response(json.dumps('Invalid state parameter.'), 401)
