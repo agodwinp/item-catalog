@@ -40,17 +40,27 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Function for serializing items in category
+def serialize_category(category):
+    return {
+        'id': category.id,
+        'name': category.name,
+        'items': [i.serialize for i in session.query(Item).filter_by(category_id=category.id)]
+    }
+
 # JSON API Endpoints
 @app.route('/catalog/json')
 def catalogJSON():
-    data = {}
+    #data = {}
+    #categories = session.query(Category).all()
+    #for i in categories:
+    #    items = session.query(Item).filter_by(category_id=i.id)
+    #    data[i.name] = {"id":i.id, "Items":[j.serialize for j in items]}
+    #json_data = {}
+    #json_data['Category'] = [data]
+    #return jsonify(json_data)
     categories = session.query(Category).all()
-    for i in categories:
-        items = session.query(Item).filter_by(category_id=i.id)
-        data[i.name] = {"id":i.id, "Items":[j.serialize for j in items]}
-    json_data = {}
-    json_data['Category'] = [data]
-    return jsonify(json_data)
+    return jsonify(Categories=[serialize_category(i) for i in categories])
 
 @app.route('/catalog/<int:category_id>/json')
 @app.route('/catalog/<int:category_id>/items/json')
