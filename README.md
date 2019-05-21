@@ -17,23 +17,27 @@ items and item categories within a catalog. Security features have been implemen
 The architecture for this web application consists of a Flask application accessing data from a SQLite database, being served from a Linux Virtual Machine (VM). The front end has been built HTML, CSS, JavaScript, jQuery and AJAX. The backend was built using Python and SQLAlchemy. See the below architecture diagram for an overview of the application.
 
 <br>
+<br>
 <p align="center">
     <img src="application_architecture.png" width="600", title="Architecture">
 </p>
 <br>
+<br>
 
 The backend is made of 3 tables:
 
-1. Item: for the items within the catalog
-2. Category: for the categories within the catalog
-3. Users: for the users that have ownership of categories and items
+1. **Item**: for the items within the catalog
+2. **Category**: for the categories within the catalog
+3. **Users**: for the users that have ownership of categories and items
 
 See the below diagram for a detailed understanding of the data model.
 
 <br>
+<br>
 <p align="center">
     <img src="data_model.png" width="600", title="Data Model">
 </p>
+<br>
 <br>
 
 The application is built from the below files:
@@ -63,6 +67,25 @@ The application is built from the below files:
 
 - **css/styles.css**: Contains all styling properties of the web application.
 - **/images**: Contains all images for the catalog categories.
+
+***
+
+## Code Design
+
+### Bootstrap
+The styling for this web application utilises the Bootstrap framework https://getbootstrap.com. Bootstrap is an open source toolkit for developing with HTML, CSS, and JavaScript.
+
+### Security
+Protecting data from unwanted users is paramount. The resources available within this application are protected without authorisation. This web application implements an OAuth token based security mechanism via Google Sign-In. Once a user has signed in, they are able to create new items and categories within the catalog. Authenticated users may only edit or delete items or categories that they have created.
+
+To improve user experience, access to edit and delete is only capable within categories and items assigned to the user that created them.
+
+### API Endpoints
+This web application includes 3 API endpoints, accessible in a JSON format via REST. Details of the 3 APIs are below:
+
+- **Catalog API**: Returns data on all categories and items within categories in a JSON format.
+- **Category API**: Returns data on items within a specific category based on `category_id`.
+- **Item API**: Returns data on a specific item within a category based on `category_id` and `item_id`.
 
 ***
 
