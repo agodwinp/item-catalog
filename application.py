@@ -122,7 +122,8 @@ def landingPage():
             try:
                 session.query(User).filter_by(email=login_session['email']).one()
             except:
-                newUser = User(name=login_session['username'], email=login_session['email'], picture=login_session['picture'])
+                newUser = User(name=login_session['username'], email=login_session['email'],
+                               picture=login_session['picture'])
                 session.add(newUser)
                 session.commit()
             return "Successful"
@@ -145,7 +146,8 @@ def welcome():
 def showCatalog():
     state = generateState(login_session, 'state')
     categories = session.query(Category).all()
-    return render_template('allCategories.html', categories=categories, STATE=state, session=login_session)
+    return render_template('allCategories.html', categories=categories, STATE=state,
+                           session=login_session)
 
 # PROTECTED
 @app.route('/catalog/new', methods=['GET', 'POST'])
@@ -196,7 +198,8 @@ def editCategory(category_id):
                 return redirect(url_for('showCatalog'))
             # If they are, redirect to this
             category_name = category.name
-            return render_template('editCategory.html', category_id=category_id, category_name=category_name, STATE=state)
+            return render_template('editCategory.html', category_id=category_id,
+                                   category_name=category_name, STATE=state)
         except KeyError:
             flash("Please log in!")
             return redirect(url_for('showCatalog'))
@@ -226,7 +229,8 @@ def deleteCategory(category_id):
                 return redirect(url_for('showCatalog'))
             # If they are, redirect to this
             category_name = category.name
-            return render_template('deleteCategory.html', category_id=category_id, category_name=category_name, STATE=state)
+            return render_template('deleteCategory.html', category_id=category_id,
+                                   category_name=category_name, STATE=state)
         except KeyError:
             flash("Please log in!")
             return redirect(url_for('showCatalog'))
@@ -252,7 +256,8 @@ def showItems(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     user = session.query(User).filter_by(id=category.user_id).one()
     user_email = user.email
-    return render_template('showItems.html', items=items, category_id=category_id, category=category, STATE=state, session=login_session, user_email=user_email)
+    return render_template('showItems.html', items=items, category_id=category_id, category=category,
+                           STATE=state, session=login_session, user_email=user_email)
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/items/new', methods=['GET', 'POST'])
@@ -280,7 +285,8 @@ def newItem(category_id):
         if category.user_id != user_id:
             flash("You are not authorised to create an item in this category...")
             return redirect(url_for('showItems', category_id=category_id))
-        newItem = Item(title=request.form['title'], description=request.form['description'], category_id=category_id, user_id=user_id)
+        newItem = Item(title=request.form['title'], description=request.form['description'],
+                       category_id=category_id, user_id=user_id)
         session.add(newItem)
         session.commit()
         flash("Item successfully created!")
@@ -298,7 +304,9 @@ def editItem(category_id, item_id):
             item_name=editedItem.title
             category = session.query(Category).filter_by(id=category_id).one()
             category_name = category.name
-            return render_template('editItem.html', categories=categories, category_name=category_name, category_id=category_id, item_id=item_id, item_name=item_name, STATE=state)
+            return render_template('editItem.html', categories=categories,
+                                   category_name=category_name, category_id=category_id,
+                                   item_id=item_id, item_name=item_name, STATE=state)
         except KeyError:
             flash("Please log in!")
             return redirect(url_for('showItems', category_id=category_id))
@@ -328,7 +336,8 @@ def deleteItem(category_id, item_id):
         try:
             user = login_session['username']
             item_name = deletedItem.title
-            return render_template('deleteItem.html', category_id=category_id, item_id=item_id, item_name=item_name, STATE=state)
+            return render_template('deleteItem.html', category_id=category_id, item_id=item_id,
+                                   item_name=item_name, STATE=state)
         except KeyError:
             flash("Please log in!")
             return redirect(url_for('showItems', category_id=category_id))
