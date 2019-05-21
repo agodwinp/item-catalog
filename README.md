@@ -162,15 +162,6 @@ To install the package, run the following command:
 
     $ sudo pip install flask
     $ sudo pip install flask_httpauth
-    $ sudo pip install flask_login
-
-#### Oauth2client
-
-This is a Python library for accessing resources protected by OAuth 2.0 https://github.com/googleapis/oauth2client. 
-
-To install this package, run the following command:
-
-    $ sudo pip install oauth2client
 
 #### Google API Python Client
 

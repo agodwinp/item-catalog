@@ -1,19 +1,17 @@
 # !/usr/bin/env python3
 # Import packages
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, make_response, abort, g
-from flask import session as login_session
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from database import Base, User, Category, Item
-from flask_httpauth import HTTPBasicAuth
-from oauth2client.client import flow_from_clientsecrets
-from oauth2client.client import FlowExchangeError
-import random, string, json, requests, httplib2
-from flask_login import logout_user
+import os
+import random, string, json, httplib2
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from werkzeug.utils import secure_filename
-import os
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
+from flask import make_response
+from flask import session as login_session
+from database import Base, User, Category, Item
+from flask_httpauth import HTTPBasicAuth
 
 UPLOAD_FOLDER = './static/images/'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
@@ -75,7 +73,8 @@ def landingPage():
         return render_template("loginPage.html", STATE=state)
     if request.method == 'POST':
         try:
-            # Check the state variable for extra security, state from ajax request should be the same as random string above
+            # Check the state variable for extra security, state from ajax request
+            # should be the same as random string above
             if login_session['state'] != request.args.get('state'):
                 response = make_response(json.dumps('Invalid state parameter.'), 401)
                 response.headers['Content-Type'] = 'application/json'
@@ -213,7 +212,7 @@ def editCategory(category_id):
         return redirect(url_for('showCatalog'))
 
 # PROTECTED
-@app.route('/catalog/<int:category_id>/delete', methods=['GET','POST'])
+@app.route('/catalog/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategory(category_id):
     state = generateState(login_session, 'state')
     if request.method == 'GET':
@@ -244,7 +243,7 @@ def deleteCategory(category_id):
             if os.path.exists(app.config['UPLOAD_FOLDER'] + image_to_delete):
                 os.remove(app.config['UPLOAD_FOLDER'] + image_to_delete)
         return redirect(url_for('showCatalog'))
-        
+
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>')
@@ -256,8 +255,9 @@ def showItems(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     user = session.query(User).filter_by(id=category.user_id).one()
     user_email = user.email
-    return render_template('showItems.html', items=items, category_id=category_id, category=category,
-                           STATE=state, session=login_session, user_email=user_email)
+    return render_template('showItems.html', items=items, category_id=category_id,
+                           category=category, STATE=state, session=login_session,
+                           user_email=user_email)
 
 # PROTECTED
 @app.route('/catalog/<int:category_id>/items/new', methods=['GET', 'POST'])
@@ -301,7 +301,7 @@ def editItem(category_id, item_id):
         try:
             user = login_session['username']
             categories = session.query(Category).all()
-            item_name=editedItem.title
+            item_name = editedItem.title
             category = session.query(Category).filter_by(id=category_id).one()
             category_name = category.name
             return render_template('editItem.html', categories=categories,
