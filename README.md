@@ -206,7 +206,9 @@ Now you are ready to run the application! You must ssh into the VM, then access 
     $ cd udacity-item-catalog
     $ python application.py
 
-When you run the final command, you should now see that within the Vagrant VM the application is being served on "http://0.0.0.0:8000". To access the web application, open up a new web browser window on the same machine and go to this URL address: "http://0.0.0.0:8000" or "http://localhost:8000". If this connects successfully, you will see a GET request within the Vagrant VM output and the landing page for the web application, prompting the user to `Enter` the site or `Login`.
+When you run the final command, you should now see that within the Vagrant VM the application is being served on "http://0.0.0.0:8000". To access the web application, open up a new web browser window on the same machine and go to this URL address: "http://0.0.0.0:8000" or "http://localhost:8000". 
+
+If this connects successfully, you will see a GET request within the Vagrant VM output and the landing page for the web application within the web browser, prompting the user to `Enter` the site or `Login`.
 
 ***Well done!*** You ran a data driven web application running on a Linux VM! Let me know what you think!
 
