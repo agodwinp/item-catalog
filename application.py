@@ -1,3 +1,4 @@
+# !/usr/bin/env python3
 # Import packages
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, make_response, abort, g
 from flask import session as login_session
@@ -51,14 +52,6 @@ def serialize_category(category):
 # JSON API Endpoints
 @app.route('/catalog/json')
 def catalogJSON():
-    #data = {}
-    #categories = session.query(Category).all()
-    #for i in categories:
-    #    items = session.query(Item).filter_by(category_id=i.id)
-    #    data[i.name] = {"id":i.id, "Items":[j.serialize for j in items]}
-    #json_data = {}
-    #json_data['Category'] = [data]
-    #return jsonify(json_data)
     categories = session.query(Category).all()
     return jsonify(Categories=[serialize_category(i) for i in categories])
 
