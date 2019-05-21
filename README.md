@@ -109,7 +109,7 @@ Once you have VirtualBox and Vagrant installed, open a terminal and run the foll
 This will create a new directory for this project. Then, download this ZIP file:
 - https://s3.amazonaws.com/video.udacity-data.com/topher/2018/April/5acfbfa3_fsnd-virtual-machine/fsnd-virtual-machine.zip
 
-This will download the Linux image `FSND-Virtual-Machine` into your downloads folder. Once it's finished downloading, open the folder `FSND-Virtual-Machine` and move everything within it into your `item_catalog` folder. The Linux instance is now within the `item_catalog` directory. Now we want to start the image. Navigate to your `item_catalog` folder and issue the following commands:
+This will download the Linux image `FSND-Virtual-Machine` into your downloads folder. Once it's finished downloading, open the folder `FSND-Virtual-Machine` and move everything within the `vagrant` folder into your `item_catalog` folder. The Linux instance is now within the `item_catalog` directory. Now we want to start the image. Navigate to your `item_catalog` folder and issue the following commands:
 
     $ cd vagrant
     $ vagrant up
@@ -120,8 +120,8 @@ Next, to log into the Linux instance, run:
 
 Congratulations! You've now installed the Linux image, started the VM and are logged into the VM via ssh. If you log out of the Linux instance or close the terminal, the next time you want to use it you only need to run `cd logs_analysis` and `vagrant ssh`.
 
-### Configuring Python and ...
-To install the correct version of Python and ..., make sure you're still working within the installed VM. If not, `cd item_catalog` and run `vagrant ssh`.
+### Configuring the Virtual Machine
+To install the correct packages, make sure you're still working within the installed VM. If not, `cd item_catalog` and run `vagrant ssh`.
 #### Python
 For this project, we will be using Python 3. Check the version of Python installed within the VM by running:
 
@@ -146,14 +146,50 @@ Check that Python 3 is installed and active. The output of this command should b
 
     $ python --version
 
+#### SQLAlchemy
+
+SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL. It provides a full suite of well known enterprise-level persistence patterns, designed for efficient and high-performing database access, adapted into a simple and Pythonic domain language https://www.sqlalchemy.org. 
+
+To install the package, run the following command:
+
+    $ sudo pip install sqlalchemy
+
+#### Flask
+
+Flask is a microframework for Python based on Werkzeug, Jinja 2 and good intentions. You can use Flask to serve applications simply and easily http://flask.pocoo.org.
+
+To install the package, run the following command:
+
+    $ sudo pip install flask
+    $ sudo pip install flask_httpauth
+    $ sudo pip install flask_login
+
+#### Oauth2client
+
+This is a Python library for accessing resources protected by OAuth 2.0 https://github.com/googleapis/oauth2client. 
+
+To install this package, run the following command:
+
+    $ sudo pip install oauth2client
+
+#### Google API Python Client
+
+Obtains end-user authorization grants for use with other Google APIs.
+
+To install this package, run the following command:
+
+    $ sudo pip install google-api-python-client
+
 ### Set up application
 Now you will clone this repository into the vagrant folder so that you can set up and run the application from the Linux VM on your local machine. To do this, open up a fresh terminal window (outside of the VM) and issue the following commands:
 
     $ cd item_catalog/vagrant 
     $ git clone https://github.com/agodwinp/udacity-item-catalog
 
-Within the vagrant folder, you should now see a `udacity-item-catalog` folder containing the files within this repository. In order to populate the database with data, you must first run the following command from the terminal:
+Within the vagrant folder, you should now see a `udacity-item-catalog` folder containing the files within this repository. In order to populate the database with data, switch over to the terminal that you issued `vagrant ssh` from, where you should now be logged into the VM. Then run the following commands:
 
+    $ cd /vagrant
+    $ cd udacity-item-catalog
     $ python populatedb.py
 
 If this runs successfully, then the database is now populated and the application is ready to run.
@@ -167,7 +203,7 @@ Now you are ready to run the application! You must ssh into the VM, then access 
     $ cd item_catalog/vagrant
     $ vagrant ssh
     $ cd /vagrant
-    $ cd "udacity-item-catalog"
+    $ cd udacity-item-catalog
     $ python application.py
 
 When you run the final command, you should now see that within the Vagrant VM the application is being served on "http://0.0.0.0:8000". To access the web application, open up a new web browser window on the same machine and go to this URL address: "http://0.0.0.0:8000" or "http://localhost:8000". If this connects successfully, you will see a GET request within the Vagrant VM output and the landing page for the web application, prompting the user to `Enter` the site or `Login`.
