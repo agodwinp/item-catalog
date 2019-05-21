@@ -3,10 +3,10 @@
 
 This item catalog project is a web application designed for a store with the ability to:
 
-1. Create,
-2. Read,
-3. Update,
-4. And delete...
+1. **Create**,
+2. **Read**,
+3. **Update**,
+4. And **delete**...
 
 items and item categories within a catalog. Security features have been implemented to protect resources from being edited or removed by un-authorised users.
 
