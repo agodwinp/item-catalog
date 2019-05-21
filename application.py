@@ -148,7 +148,7 @@ def showCatalog():
     return render_template('allCategories.html', categories=categories, STATE=state,
                            session=login_session)
 
-# PROTECTED
+
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def newCategory():
     state = generateState(login_session, 'state')
@@ -179,7 +179,7 @@ def newCategory():
             flash("New category added!")
             return redirect(url_for('showCatalog'))
 
-# PROTECTED
+
 @app.route('/catalog/<int:category_id>/edit', methods=['GET', 'POST'])
 def editCategory(category_id):
     state = generateState(login_session, 'state')
@@ -211,7 +211,7 @@ def editCategory(category_id):
         flash("Category successfully edited!")
         return redirect(url_for('showCatalog'))
 
-# PROTECTED
+
 @app.route('/catalog/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategory(category_id):
     state = generateState(login_session, 'state')
@@ -245,12 +245,10 @@ def deleteCategory(category_id):
         return redirect(url_for('showCatalog'))
 
 
-# PROTECTED
 @app.route('/catalog/<int:category_id>')
 @app.route('/catalog/<int:category_id>/items')
 def showItems(category_id):
     state = generateState(login_session, 'state')
-    # have an accordian here to expand details
     items = session.query(Item).filter_by(category_id=category_id).all()
     category = session.query(Category).filter_by(id=category_id).one()
     user = session.query(User).filter_by(id=category.user_id).one()
@@ -259,7 +257,7 @@ def showItems(category_id):
                            category=category, STATE=state, session=login_session,
                            user_email=user_email)
 
-# PROTECTED
+
 @app.route('/catalog/<int:category_id>/items/new', methods=['GET', 'POST'])
 def newItem(category_id):
     state = generateState(login_session, 'state')
@@ -292,7 +290,7 @@ def newItem(category_id):
         flash("Item successfully created!")
         return redirect(url_for('showItems', category_id=category_id))
 
-# PROTECTED
+
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/edit', methods=['GET', 'POST'])
 def editItem(category_id, item_id):
     state = generateState(login_session, 'state')
