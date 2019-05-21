@@ -14,15 +14,13 @@ items and item categories within a catalog. Security features have been implemen
 
 ## Solution Architecture
 
-The architecture for this web application consists of a Flask application accessing data from a SQLite database, being served from a Linux Virtual Machine (VM). The front end has been built HTML, CSS, JavaScript, jQuery and AJAX. The backend was built using Python and SQLAlchemy. See the below architecture diagram for a detailed overview of the application.
+The architecture for this web application consists of a Flask application accessing data from a SQLite database, being served from a Linux Virtual Machine (VM). The front end has been built HTML, CSS, JavaScript, jQuery and AJAX. The backend was built using Python and SQLAlchemy. See the below architecture diagram for an overview of the application.
 
 <br>
 <p align="center">
     <img src="application_architecture.png" width="600", title="Architecture">
 </p>
 <br>
-
-
 
 The backend is made of 3 tables:
 
@@ -31,6 +29,12 @@ The backend is made of 3 tables:
 3. Users: for the users that have ownership of categories and items
 
 See the below diagram for a detailed understanding of the data model.
+
+<br>
+<p align="center">
+    <img src="data_model.png" width="600", title="Data Model">
+</p>
+<br>
 
 The application is built from the below files:
 
