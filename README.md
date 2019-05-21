@@ -47,6 +47,11 @@ The application is built from the below files:
 - **deleteItem**: Delete an existing category, if authorised, after signing in.
 - **unAuthorisedEntry**: Fallback unauthorised entry page if an unauthorised user tries to create, update or delete data.
 
+**/static**
+
+- **css/styles.css**: Contains all styling properties of the web application.
+- **/images**: Contains all images for the catalog categories.
+
 ***
 
 ## Installation
