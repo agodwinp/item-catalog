@@ -1,13 +1,16 @@
 # !/usr/bin/env python3
 import sys
+import random
+import string
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
-import random, string
+
 
 Base = declarative_base()
-secret_key = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
+secret_key = ''.join(random.choice(string.ascii_uppercase +
+                                   string.digits) for x in range(32))
 
 
 class User(Base):
@@ -29,8 +32,8 @@ class Category(Base):
     @property
     def serialize(self):
         return {
-            'id':self.id,
-            'name':self.name,
+            'id': self.id,
+            'name': self.name,
         }
 
 
@@ -47,10 +50,10 @@ class Item(Base):
     @property
     def serialize(self):
         return {
-            'id':self.id,
-            'title':self.title,
-            'description':self.description,
-            'category_id':self.category_id,
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'category_id': self.category_id,
         }
 
 
