@@ -1,0 +1,4 @@
+sqlalchemy
+flask
+flask_httpauth
+google-api-python-client
