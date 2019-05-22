@@ -146,30 +146,17 @@ Check that Python 3 is installed and active. The output of this command should b
 
     $ python --version
 
-#### SQLAlchemy
+#### Dependencies
 
-SQLAlchemy is the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL. It provides a full suite of well known enterprise-level persistence patterns, designed for efficient and high-performing database access, adapted into a simple and Pythonic domain language https://www.sqlalchemy.org. 
+To install the dependencies for this web application, please run the following command:
 
-To install the package, run the following command:
+    $ sudo pip install -r requirements.txt
 
-    $ sudo pip install sqlalchemy
+This will install the following packages:
 
-#### Flask
-
-Flask is a microframework for Python based on Werkzeug, Jinja 2 and good intentions. You can use Flask to serve applications simply and easily http://flask.pocoo.org.
-
-To install the package, run the following command:
-
-    $ sudo pip install flask
-    $ sudo pip install flask_httpauth
-
-#### Google API Python Client
-
-Obtains end-user authorization grants for use with other Google APIs.
-
-To install this package, run the following command:
-
-    $ sudo pip install google-api-python-client
+- **SQLAlchemy**: the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL https://www.sqlalchemy.org.
+- **Flask**: is a microframework for Python based on Werkzeug, Jinja 2 and good intentions. You can use Flask to serve applications simply and easily http://flask.pocoo.org.
+- **Google API Python Client**: obtains end-user authorization grants for use with other Google APIs.
 
 ### Set up application
 Now you will clone this repository into the vagrant folder so that you can set up and run the application from the Linux VM on your local machine. To do this, open up a fresh terminal window (outside of the VM) and issue the following commands:
