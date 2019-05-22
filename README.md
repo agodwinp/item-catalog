@@ -156,7 +156,7 @@ This will install the following packages:
 
 - **SQLAlchemy**: the Python SQL toolkit and Object Relational Mapper that gives application developers the full power and flexibility of SQL https://www.sqlalchemy.org.
 - **Flask**: is a microframework for Python based on Werkzeug, Jinja 2 and good intentions. You can use Flask to serve applications simply and easily http://flask.pocoo.org.
-- **Google API Python Client**: obtains end-user authorization grants for use with other Google APIs.
+- **Google API Python Client**: obtains end-user authorization grants for use with other Google APIs https://github.com/googleapis/google-api-python-client.
 
 ### Set up application
 Now you will clone this repository into the vagrant folder so that you can set up and run the application from the Linux VM on your local machine. To do this, open up a fresh terminal window (outside of the VM) and issue the following commands:
