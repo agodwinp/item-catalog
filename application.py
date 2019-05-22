@@ -78,6 +78,11 @@ def serialize_category(category):
 # JSON API Endpoints
 @app.route('/catalog/json')
 def catalogJSON():
+    """
+    Catalog API endpoint.
+
+    Returns JSON formatted catalog data with all categories and items.
+    """
     categories = session.query(Category).all()
     return jsonify(Categories=[serialize_category(i) for i in categories])
 
@@ -85,12 +90,24 @@ def catalogJSON():
 @app.route('/catalog/<int:category_id>/json')
 @app.route('/catalog/<int:category_id>/items/json')
 def categoryJSON(category_id):
+    """
+    Category API endpoint.
+
+    Returns JSON formatted category data with all items within it,
+    based on category_id.
+    """
     category_items = session.query(Item).filter_by(category_id=category_id)
     return jsonify(Items=[i.serialize for i in category_items])
 
 
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/json')
 def itemsJSON(category_id, item_id):
+    """
+    Item API endpoint.
+
+    Returns JSON formatted item data, based on category_id and
+    user_id.
+    """
     item = session.query(Item).filter_by(id=item_id).one()
     return jsonify(Item=item.serialize)
 
@@ -99,6 +116,12 @@ def itemsJSON(category_id, item_id):
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def landingPage():
+    """
+    Landing page of web application.
+
+    This web page provides the landing page for the root URL. The
+    user can enter the site, or Login via Google Sign-In.
+    """
     if request.method == 'GET':
         state = generateState(login_session, 'state')
         return render_template("loginPage.html", STATE=state)
@@ -177,12 +200,25 @@ def landingPage():
 
 @app.route('/logout', methods=['POST'])
 def logout():
+    """
+    Logs the user out.
+
+    This simple route logs the user out of the application and clears
+    the session cookie.
+    """
     login_session.clear()
     return "Logged out"
 
 
 @app.route('/welcome')
 def welcome():
+    """
+    Welcome page after logging in.
+
+    After the user logs in, they will be redirected to this login
+    page where they'll be welcomed by their name and Google profile
+    image.
+    """
     name = login_session['username']
     picture = login_session['picture']
     return render_template('welcome.html', name=name, picture=picture)
@@ -190,6 +226,13 @@ def welcome():
 
 @app.route('/catalog')
 def showCatalog():
+    """
+    Displays all categories within the catalog.
+
+    This page will display all categories within the catalog to the
+    user. If logged in, they will have the ability to add a new
+    category.
+    """
     state = generateState(login_session, 'state')
     categories = session.query(Category).all()
     return render_template('allCategories.html', categories=categories,
@@ -198,6 +241,13 @@ def showCatalog():
 
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def newCategory():
+    """
+    Add a new category within the catalog.
+
+    This page will provide a form for the user to create a new catalog 
+    category. This page is only accessible once logged in, and the 
+    created category will be owned by the logged in user.
+    """
     state = generateState(login_session, 'state')
     if request.method == 'GET':
         try:
@@ -231,6 +281,13 @@ def newCategory():
 
 @app.route('/catalog/<int:category_id>/edit', methods=['GET', 'POST'])
 def editCategory(category_id):
+    """
+    Edit a category within the catalog.
+
+    This page will provide a form for the user to edit an existing catalog
+    category. This page is only accessible once logged in, and the user 
+    can only access this page if they created the category.
+    """
     state = generateState(login_session, 'state')
     if request.method == 'GET':
         # Check if they are logged in
@@ -266,6 +323,14 @@ def editCategory(category_id):
 
 @app.route('/catalog/<int:category_id>/delete', methods=['GET', 'POST'])
 def deleteCategory(category_id):
+    """
+    Delete a category within the catalog.
+
+    This page will provide a form for the user to complete that
+    will delete an existing catalog category. This page is only accessible
+    once logged in, and the user can only access this page if they created
+    the category.
+    """
     state = generateState(login_session, 'state')
     if request.method == 'GET':
         try:
@@ -303,6 +368,13 @@ def deleteCategory(category_id):
 @app.route('/catalog/<int:category_id>')
 @app.route('/catalog/<int:category_id>/items')
 def showItems(category_id):
+    """
+    Displays all items within a category.
+
+    This page will display all items within a catalog category. If logged in
+    and the user has ownership of the category, they will have the ability 
+    to add a new item, or edit and delete an item.
+    """
     state = generateState(login_session, 'state')
     items = session.query(Item).filter_by(category_id=category_id).all()
     category = session.query(Category).filter_by(id=category_id).one()
@@ -316,6 +388,13 @@ def showItems(category_id):
 
 @app.route('/catalog/<int:category_id>/items/new', methods=['GET', 'POST'])
 def newItem(category_id):
+    """
+    Add a new item within a category.
+
+    This page will provide a form for the user to create a new item within
+    a category. This page is only accessible once logged in and if the user 
+    has ownership of the category that the item is being added to.
+    """
     state = generateState(login_session, 'state')
     if request.method == 'GET':
         try:
@@ -355,6 +434,13 @@ def newItem(category_id):
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/edit',
            methods=['GET', 'POST'])
 def editItem(category_id, item_id):
+    """
+    Edit an item within a category.
+
+    This page will provide a form for the user to edit an existing item 
+    within a category. This page is only accessible once logged in and if the user 
+    has ownership of the category that the item is being edited within.
+    """
     state = generateState(login_session, 'state')
     editedItem = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'GET':
@@ -393,6 +479,13 @@ def editItem(category_id, item_id):
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/delete',
            methods=['GET', 'POST'])
 def deleteItem(category_id, item_id):
+    """
+    Delete an item within a category.
+
+    This page will provide a form for the user to delete an existing item 
+    within a category. This page is only accessible once logged in and if the user 
+    has ownership of the category that the item is being deleted from.
+    """
     state = generateState(login_session, 'state')
     deletedItem = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'GET':
