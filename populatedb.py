@@ -120,7 +120,7 @@ description = "Another essential piece of equipment, without these it won't "
 description += "take long before the police are called. Veruy similar to "
 description += "football shorts, but more rugged and more suited to "
 description += "sliding on the grass."
-Items = Item(title="Rugby Shorts", description=descrioption, category_id=2,
+Items = Item(title="Rugby Shorts", description=description, category_id=2,
              user_id=1)
 session.add(Items)
 session.commit()
