@@ -36,6 +36,12 @@ CLIENT_ID = json.loads(
 
 # Function used for generate state
 def generateState(sess, key):
+    """
+    Generate state used for application cookie.
+
+    Creates a randon string of numbers and letters to encrypt the
+    users session for use within a cookie.
+    """
     state = ''.join(random.choice(string.ascii_uppercase +
                                   string.digits) for x in range(32))
     sess[key] = state
@@ -43,12 +49,24 @@ def generateState(sess, key):
 
 
 def allowed_file(filename):
+    """
+    Checks if uploaded file is allowed.
+
+    File type checker used when user uploads an image for a
+    new category.
+    """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 # Function for serializing items in category
 def serialize_category(category):
+    """
+    Create JSON formatted string for category and items.
+
+    Serialize a category with all its items ready for consumption
+    within the catalog API endpoint.
+    """
     items = session.query(Item).filter_by(category_id=category.id)
     return {
         'id': category.id,
@@ -120,7 +138,6 @@ def landingPage():
             if result['aud'] != CLIENT_ID:
                 message = "Token's client ID does not match apps."
                 response = make_response(json.dumps(message), 401)
-                print("Token's client ID does not match apps.")
                 response.headers['Content-Type'] = 'application/json'
                 return response
             # Check if the user is already logged in
