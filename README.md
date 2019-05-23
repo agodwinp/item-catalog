@@ -122,29 +122,6 @@ Congratulations! You've now installed the Linux image, started the VM and are lo
 
 ### Configuring the Virtual Machine
 To install the correct packages, make sure you're still working within the installed VM. If not, `cd item_catalog` and run `vagrant ssh`.
-#### Python
-For this project, we will be using Python 3. Check the version of Python installed within the VM by running:
-
-    $ python --version
-
-If the VM is using Python 2 (returning something that looks like this: "Python 2.x.x"), then you must upgrade this to Python 3 ("Python 3.x.x"). If you already have Python 3 installed, then skip to the next part on installing Psycopg2. To upgrade Python 2 to Python 3, use the following commands:
-
-Download the package lists from the repositories and update them.
-
-    $ sudo apt-get update
-
-Install Python 3
-
-    $ sudo apt-get install python3
-
-Change the default Python version
-
-    $ sudo rm /usr/bin/python
-    $ sudo ln -s /usr/bin/python3 /usr/bin/python
-
-Check that Python 3 is installed and active. The output of this command should be something like "Python 3.5.2".
-
-    $ python --version
 
 ### Set up application
 Now you will clone this repository into the vagrant folder so that you can set up and run the application from the Linux VM on your local machine. To do this, open up a fresh terminal window (outside of the VM) and issue the following commands:

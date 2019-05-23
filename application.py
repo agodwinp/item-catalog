@@ -43,7 +43,7 @@ def generateState(sess, key):
     users session for use within a cookie.
     """
     state = ''.join(random.choice(string.ascii_uppercase +
-                                  string.digits) for x in range(32))
+                                  string.digits) for x in xrange(32))
     sess[key] = state
     return state
 
