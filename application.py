@@ -185,8 +185,9 @@ def landingPage():
             login_session['email'] = idinfo['email']
             # Check if this user exists in database
             try:
-                session.query(User).filter_by(email=login_session['email'])
-            except:
+                user = login_session['email']
+                session.query(User).filter_by(email=user)
+            except KeyError:
                 newUser = User(name=login_session['username'],
                                email=login_session['email'],
                                picture=login_session['picture'])
@@ -244,8 +245,8 @@ def newCategory():
     """
     Add a new category within the catalog.
 
-    This page will provide a form for the user to create a new catalog 
-    category. This page is only accessible once logged in, and the 
+    This page will provide a form for the user to create a new catalog
+    category. This page is only accessible once logged in, and the
     created category will be owned by the logged in user.
     """
     state = generateState(login_session, 'state')
@@ -285,7 +286,7 @@ def editCategory(category_id):
     Edit a category within the catalog.
 
     This page will provide a form for the user to edit an existing catalog
-    category. This page is only accessible once logged in, and the user 
+    category. This page is only accessible once logged in, and the user
     can only access this page if they created the category.
     """
     state = generateState(login_session, 'state')
@@ -372,7 +373,7 @@ def showItems(category_id):
     Displays all items within a category.
 
     This page will display all items within a catalog category. If logged in
-    and the user has ownership of the category, they will have the ability 
+    and the user has ownership of the category, they will have the ability
     to add a new item, or edit and delete an item.
     """
     state = generateState(login_session, 'state')
@@ -392,7 +393,7 @@ def newItem(category_id):
     Add a new item within a category.
 
     This page will provide a form for the user to create a new item within
-    a category. This page is only accessible once logged in and if the user 
+    a category. This page is only accessible once logged in and if the user
     has ownership of the category that the item is being added to.
     """
     state = generateState(login_session, 'state')
@@ -437,9 +438,10 @@ def editItem(category_id, item_id):
     """
     Edit an item within a category.
 
-    This page will provide a form for the user to edit an existing item 
-    within a category. This page is only accessible once logged in and if the user 
-    has ownership of the category that the item is being edited within.
+    This page will provide a form for the user to edit an existing item
+    within a category. This page is only accessible once logged in and
+    if the user has ownership of the category that the item is being
+    edited within.
     """
     state = generateState(login_session, 'state')
     editedItem = session.query(Item).filter_by(id=item_id).one()
@@ -482,9 +484,10 @@ def deleteItem(category_id, item_id):
     """
     Delete an item within a category.
 
-    This page will provide a form for the user to delete an existing item 
-    within a category. This page is only accessible once logged in and if the user 
-    has ownership of the category that the item is being deleted from.
+    This page will provide a form for the user to delete an existing item
+    within a category. This page is only accessible once logged in and if
+    the user has ownership of the category that the item is being deleted
+    from.
     """
     state = generateState(login_session, 'state')
     deletedItem = session.query(Item).filter_by(id=item_id).one()
