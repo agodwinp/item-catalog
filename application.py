@@ -220,9 +220,10 @@ def welcome():
     page where they'll be welcomed by their name and Google profile
     image.
     """
+    state = generateState(login_session, 'state')
     name = login_session['username']
     picture = login_session['picture']
-    return render_template('welcome.html', name=name, picture=picture)
+    return render_template('welcome.html', name=name, picture=picture, STATE=state)
 
 
 @app.route('/catalog')
