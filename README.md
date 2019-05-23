@@ -156,6 +156,7 @@ Now you will clone this repository into the vagrant folder so that you can set u
 
 To install the dependencies for this web application, please run the following command:
 
+    $ cd udacity-item-catalog
     $ sudo pip install -r requirements.txt
 
 This will install the following packages:
