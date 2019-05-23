@@ -122,35 +122,44 @@ def landingPage():
     This web page provides the landing page for the root URL. The
     user can enter the site, or Login via Google Sign-In.
     """
-    state = generateState(login_session, 'state')
     if request.method == 'GET':
-        #state = generateState(login_session, 'state')
+        state = generateState(login_session, 'state')
         return render_template("loginPage.html", STATE=state)
     if request.method == 'POST':
         try:
             # Check the state variable for extra security
             # state from ajax request should be the same as
             # random string above
+            print(1)
             if login_session['state'] != request.args.get('state'):
                 message = "Invalid state parameter."
                 response = make_response(json.dumps(message), 401)
                 response.headers['Content-Type'] = 'application/json'
                 return response
             # If so, then retrieve token sent by client
+            print(2)
             token = request.data
             # Request an access token from the Google API
+            print(3)
+            print("token:", token)
+            print("GReq:", google_requests.Request())
+            print("client_id:", CLIENT_ID)
             idinfo = id_token.verify_oauth2_token(token,
                                                   google_requests.Request(),
                                                   CLIENT_ID)
-            token_url = "https://oauth2.googleapis.com/tokeninfo?id_token=%s"
-            url = (token_url % token)
+            print(3.1)
+            token_url = "https://oauth2.googleapis.com/tokeninfo?id_token={}"
+            url = (token_url.format(token))
+            print(3.2)
             h = httplib2.Http()
+            print(4)
             result = json.loads(h.request(url, 'GET')[1])
             # If there was an error in the access token info, abort
             if result.get('error') is not None:
                 response = make_response(json.dumps(result.get('error')), 500)
                 response.headers['Content-Type'] = 'application/json'
                 return response
+            print(5)
             # Verify that the access token is used for the intended user
             user_google_id = idinfo['sub']
             if result['sub'] != user_google_id:
@@ -158,12 +167,14 @@ def landingPage():
                 response = make_response(json.dumps(message), 401)
                 response.headers['Content-Type'] = 'application/json'
                 return response
+            print(6)
             # Verify that the access token is valid for this app
             if result['aud'] != CLIENT_ID:
                 message = "Token's client ID does not match apps."
                 response = make_response(json.dumps(message), 401)
                 response.headers['Content-Type'] = 'application/json'
                 return response
+            print(7)
             # Check if the user is already logged in
             stored_access_token = login_session.get('access_token')
             stored_user_google_id = login_session.get('user_google_id')
@@ -177,6 +188,7 @@ def landingPage():
                 response = make_response(json.dumps(message), 200)
                 response.headers['Content-Type'] = 'application/json'
                 return response
+            print(8)
             # Store the access token in the session cookie for later use
             login_session['access_token'] = idinfo
             login_session['user_google_id'] = user_google_id
@@ -184,6 +196,7 @@ def landingPage():
             login_session['username'] = idinfo['name']
             login_session['picture'] = idinfo['picture']
             login_session['email'] = idinfo['email']
+            print(9)
             # Check if this user exists in database
             try:
                 email = login_session['email']
@@ -195,6 +208,7 @@ def landingPage():
                 session.add(newUser)
                 session.commit()
             return "Successful"
+            print(10)
         except ValueError:
             # Invalid token
             return "ValueError... See trace."
@@ -221,10 +235,9 @@ def welcome():
     page where they'll be welcomed by their name and Google profile
     image.
     """
-    state = generateState(login_session, 'state')
     name = login_session['username']
     picture = login_session['picture']
-    return render_template('welcome.html', name=name, picture=picture, STATE=state)
+    return render_template('welcome.html', name=name, picture=picture)
 
 
 @app.route('/catalog')
