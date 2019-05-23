@@ -185,8 +185,8 @@ def landingPage():
             login_session['email'] = idinfo['email']
             # Check if this user exists in database
             try:
-                user = login_session['email']
-                session.query(User).filter_by(email=user)
+                email = login_session['email']
+                user = session.query(User).filter_by(email=email).one()
             except KeyError:
                 newUser = User(name=login_session['username'],
                                email=login_session['email'],
@@ -258,8 +258,8 @@ def newCategory():
             flash("Please log in!")
             return redirect(url_for('showCatalog'))
     else:
-        user = session.query(User).filter_by(email=login_session['email'])
-        user = user.one()
+        email = login_session['email']
+        user = session.query(User).filter_by(email=email).one()
         user_id = user.id
         # check if the post request has the file part
         if not request.files['image']:
