@@ -124,9 +124,9 @@ Congratulations! You've now installed the Linux image, started the VM and are lo
 To install the correct packages, make sure you're still working within the installed VM. If not, `cd item_catalog` and run `vagrant ssh`.
 
 ### Set up application
-Now you will clone this repository into the vagrant folder so that you can set up and run the application from the Linux VM on your local machine. To do this, open up a fresh terminal window (outside of the VM) and issue the following commands:
+Now you will clone this repository into the vagrant folder so that you can set up and run the application from the Linux VM on your local machine. To do this, after running `vagrant ssh` issue the following commands:
 
-    $ cd item_catalog/vagrant 
+    $ cd /vagrant 
     $ git clone https://github.com/agodwinp/udacity-item-catalog
 
 #### Install dependencies
