@@ -118,7 +118,7 @@ Next, to log into the Linux instance, run:
 
     $ vagrant ssh
 
-Congratulations! You've now installed the Linux image, started the VM and are logged into the VM via ssh. If you log out of the Linux instance or close the terminal, the next time you want to use it you only need to run `cd logs_analysis` and `vagrant ssh`.
+Congratulations! You've now installed the Linux image, started the VM and are logged into the VM via ssh. If you log out of the Linux instance or close the terminal, the next time you want to use it you only need to run `cd item_catalog` and `vagrant ssh`.
 
 ### Configuring the Virtual Machine
 To install the correct packages, make sure you're still working within the installed VM. If not, `cd item_catalog` and run `vagrant ssh`.
@@ -146,7 +146,13 @@ Check that Python 3 is installed and active. The output of this command should b
 
     $ python --version
 
-#### Dependencies
+### Set up application
+Now you will clone this repository into the vagrant folder so that you can set up and run the application from the Linux VM on your local machine. To do this, open up a fresh terminal window (outside of the VM) and issue the following commands:
+
+    $ cd item_catalog/vagrant 
+    $ git clone https://github.com/agodwinp/udacity-item-catalog
+
+#### Install dependencies
 
 To install the dependencies for this web application, please run the following command:
 
@@ -158,11 +164,7 @@ This will install the following packages:
 - **Flask**: is a microframework for Python based on Werkzeug, Jinja 2 and good intentions. You can use Flask to serve applications simply and easily http://flask.pocoo.org.
 - **Google API Python Client**: obtains end-user authorization grants for use with other Google APIs https://github.com/googleapis/google-api-python-client.
 
-### Set up application
-Now you will clone this repository into the vagrant folder so that you can set up and run the application from the Linux VM on your local machine. To do this, open up a fresh terminal window (outside of the VM) and issue the following commands:
-
-    $ cd item_catalog/vagrant 
-    $ git clone https://github.com/agodwinp/udacity-item-catalog
+#### Populate database
 
 Within the vagrant folder, you should now see a `udacity-item-catalog` folder containing the files within this repository. In order to populate the database with data, switch over to the terminal that you issued `vagrant ssh` from, where you should now be logged into the VM. Then run the following commands:
 
