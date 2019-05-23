@@ -122,8 +122,9 @@ def landingPage():
     This web page provides the landing page for the root URL. The
     user can enter the site, or Login via Google Sign-In.
     """
+    state = generateState(login_session, 'state')
     if request.method == 'GET':
-        state = generateState(login_session, 'state')
+        #state = generateState(login_session, 'state')
         return render_template("loginPage.html", STATE=state)
     if request.method == 'POST':
         try:
