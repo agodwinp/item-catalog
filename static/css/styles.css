@@ -221,3 +221,11 @@ textarea:invalid {
 textarea:valid {
     border: 1px solid #455D7A;
 }
+
+select:invalid {
+    border: 1px dashed #F9AD66;
+}
+  
+select:valid {
+    border: 1px solid #455D7A;
+}
