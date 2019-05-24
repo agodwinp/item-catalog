@@ -12,13 +12,13 @@
                     <!-- Name -->
                     <div class="form-group">
                         <label for="exampleFormControlInput1">Name:</label>
-                        <input type="text" size=30 name='title' class="form-control" id="exampleFormControlInput1" placeholder="{{item_name}}">
+                        <input type="text" size=30 name='title' class="form-control" id="exampleFormControlInput1" placeholder="{{item_name}}" required>
                     </div>
                     </br>
                     <!-- Description -->
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">Description:</label>
-                        <textarea name='description' class="form-control" id="exampleFormControlTextarea1" placeholder="Add description here..." rows=5></textarea>
+                        <textarea name='description' class="form-control" id="exampleFormControlTextarea1" placeholder="Add description here..." rows=5 required></textarea>
                     </div>
                     </br>
                     <!-- Category selector -->
@@ -48,9 +48,5 @@
             </div>
         </div>
     </div>
-
-
-
-
 
 {% endblock %}

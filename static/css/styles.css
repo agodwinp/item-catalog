@@ -203,3 +203,21 @@ body.fade {
     width: 25%;
     height: 25%;
 }
+
+/* Required form fields */
+
+input:invalid {
+    border: 2px dashed #F9AD66;
+}
+  
+input:valid {
+    border: 2px solid #455D7A;
+}
+
+textarea:invalid {
+    border: 2px dashed #F9AD66;
+}
+  
+textarea:valid {
+    border: 2px solid #455D7A;
+}
