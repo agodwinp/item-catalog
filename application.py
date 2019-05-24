@@ -220,7 +220,7 @@ def logout():
 
     revoke = requests.post('https://accounts.google.com/o/oauth2/revoke',
                             params={'token': access_token},
-                            headers = {'content-type': 'application/json'})
+                            headers = {'content-type': 'application/x-www-form-urlencoded'})
     status_code = getattr(revoke, 'status_code')
 
     #url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
