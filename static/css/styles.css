@@ -229,3 +229,7 @@ select:invalid {
 select:valid {
     border: 1px solid #455D7A;
 }
+
+#exampleFormControlFile1 {
+    border: 0px;
+}
