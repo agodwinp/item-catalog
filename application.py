@@ -5,6 +5,7 @@ import random
 import string
 import json
 import httplib2
+import requests
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 from werkzeug.utils import secure_filename
@@ -216,11 +217,18 @@ def logout():
     print('In gdisconnect access token is %s' % access_token)
     print('User name is: ', login_session['username'])
     print("access_token:", login_session['access_token'])
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[0]
-    print('result is ', result)
-    if result['status'] == '200':
+
+    revoke = requests.post('https://accounts.google.com/o/oauth2/revoke',
+                            params={'token': access_token},
+                            headers = {'content-type': 'application/json'})
+    status_code = getattr(revoke, 'status_code')
+
+    #url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    #h = httplib2.Http()
+    print(revoke)
+    #result = h.request(url, 'GET')[0]
+    #print('result is ', result)
+    if status_code == '200':
         print(1)
         del login_session['access_token']
         del login_session['gplus_id']
@@ -237,7 +245,6 @@ def logout():
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
-
     
     #return "Logged out"
 
