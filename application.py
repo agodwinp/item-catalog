@@ -199,7 +199,7 @@ def landingPage():
             return "ValueError... See trace."
 
 
-@app.route('/logout', methods=['GET'])
+@app.route('/logout', methods=['POST'])
 def logout():
     """
     Logs the user out.
@@ -233,6 +233,9 @@ def logout():
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+
+    
+    #return "Logged out"
 
 
 @app.route('/welcome')
