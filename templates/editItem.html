@@ -27,9 +27,9 @@
                         <select name="category_id" class="custom-select" id="exampleFormControlSelector1" size="5">
                             {% for i in categories %}
                                 {% if i == category_name %}
-                                    <option selected name="category_id" value={{i.id}}>{{i.name}}</option>
+                                    <option selected name="category_id" value={{i.id}} required>{{i.name}}</option>
                                 {% else %}
-                                    <option name="category_id" value={{i.id}}>{{i.name}}</option>
+                                    <option name="category_id" value={{i.id}} required>{{i.name}}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
