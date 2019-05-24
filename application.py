@@ -279,14 +279,13 @@ def newCategory():
                 filename = secure_filename(file.filename)
                 file.save(app.config['UPLOAD_FOLDER'] + filename)
                 newCategory = Category(name=name, image=filename,
-                                    user_id=user_id)
+                                       user_id=user_id)
                 session.add(newCategory)
                 session.commit()
                 flash("New category added!")
                 return redirect(url_for('showCatalog'))
             flash("Please choose a name!")
             return redirect(url_for('newCategory'))
-            
 
 
 @app.route('/catalog/<int:category_id>/edit', methods=['GET', 'POST'])
@@ -439,8 +438,8 @@ def newItem(category_id):
             return redirect(url_for('showItems', category_id=category_id))
         if title and description:
             newItem = Item(title=title,
-                        description=description,
-                        category_id=category_id, user_id=user_id)
+                           description=description,
+                           category_id=category_id, user_id=user_id)
             session.add(newItem)
             session.commit()
             flash("Item successfully created!")
@@ -498,7 +497,8 @@ def editItem(category_id, item_id):
             flash("Item successfully edited!")
             return redirect(url_for('showItems', category_id=category_id))
         flash('Please complete the form!')
-        return redirect(url_for('editItem', category_id=category_id, item_id=item_id))
+        return redirect(url_for('editItem', category_id=category_id,
+                        item_id=item_id))
 
 
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/delete',
