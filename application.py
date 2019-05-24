@@ -199,7 +199,7 @@ def landingPage():
             return "ValueError... See trace."
 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET'])
 def logout():
     """
     Logs the user out.
@@ -220,14 +220,17 @@ def logout():
     result = h.request(url, 'GET')[0]
     print('result is ', result)
     if result['status'] == '200':
+        print(1)
         del login_session['access_token']
         del login_session['gplus_id']
         del login_session['username']
         del login_session['email']
         del login_session['picture']
+        print(2)
         login_session.clear()
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
+        print(3)
         return response
     else:
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
