@@ -225,6 +225,7 @@ def logout():
         del login_session['username']
         del login_session['email']
         del login_session['picture']
+        login_session.clear()
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -232,9 +233,6 @@ def logout():
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
-    
-    #login_session.clear()
-    #return "Logged out"
 
 
 @app.route('/welcome')
