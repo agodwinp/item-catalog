@@ -199,7 +199,7 @@ def landingPage():
             return "ValueError... See trace."
 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET'])
 def logout():
     """
     Logs the user out.
