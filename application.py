@@ -261,23 +261,32 @@ def newCategory():
         email = login_session['email']
         user = session.query(User).filter_by(email=email).one()
         user_id = user.id
+        name = request.form['name']
+        image = request.files['image']
         # check if the post request has the file part
-        if not request.files['image']:
-            newCategory = Category(name=request.form['name'], user_id=user_id)
-            session.add(newCategory)
-            session.commit()
-            flash("New category added!")
-            return redirect(url_for('showCatalog'))
+        if not image:
+            if name:
+                newCategory = Category(name=name, user_id=user_id)
+                session.add(newCategory)
+                session.commit()
+                flash("New category added!")
+                return redirect(url_for('showCatalog'))
+            flash("Please choose a name!")
+            return redirect(url_for('newCategory'))
         file = request.files['image']
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(app.config['UPLOAD_FOLDER'] + filename)
-            newCategory = Category(name=request.form['name'], image=filename,
-                                   user_id=user_id)
-            session.add(newCategory)
-            session.commit()
-            flash("New category added!")
-            return redirect(url_for('showCatalog'))
+            if name:
+                filename = secure_filename(file.filename)
+                file.save(app.config['UPLOAD_FOLDER'] + filename)
+                newCategory = Category(name=name, image=filename,
+                                    user_id=user_id)
+                session.add(newCategory)
+                session.commit()
+                flash("New category added!")
+                return redirect(url_for('showCatalog'))
+            flash("Please choose a name!")
+            return redirect(url_for('newCategory'))
+            
 
 
 @app.route('/catalog/<int:category_id>/edit', methods=['GET', 'POST'])
@@ -314,12 +323,15 @@ def editCategory(category_id):
     else:
         editedCategory = session.query(Category).filter_by(id=category_id)
         editedCategory = editedCategory.one()
-        if request.form['name']:
+        name = request.form['name']
+        if name:
             editedCategory.name = request.form['name']
-        session.add(editedCategory)
-        session.commit()
-        flash("Category successfully edited!")
-        return redirect(url_for('showCatalog'))
+            session.add(editedCategory)
+            session.commit()
+            flash("Category successfully edited!")
+            return redirect(url_for('showCatalog'))
+        flash("Please choose a name!")
+        return redirect(url_for('editCategory', category_id=category_id))
 
 
 @app.route('/catalog/<int:category_id>/delete', methods=['GET', 'POST'])
@@ -419,17 +431,22 @@ def newItem(category_id):
         user = user.one()
         user_id = user.id
         category = session.query(Category).filter_by(id=category_id).one()
+        title = request.form['title']
+        description = request.form['description']
         # Double check that user is authorised to make an item in this category
         if category.user_id != user_id:
             flash("You are not authorised to create an item in this category.")
             return redirect(url_for('showItems', category_id=category_id))
-        newItem = Item(title=request.form['title'],
-                       description=request.form['description'],
-                       category_id=category_id, user_id=user_id)
-        session.add(newItem)
-        session.commit()
-        flash("Item successfully created!")
-        return redirect(url_for('showItems', category_id=category_id))
+        if title and description:
+            newItem = Item(title=title,
+                        description=description,
+                        category_id=category_id, user_id=user_id)
+            session.add(newItem)
+            session.commit()
+            flash("Item successfully created!")
+            return redirect(url_for('showItems', category_id=category_id))
+        flash("Please complete the form!")
+        return redirect(url_for('newItem', category_id=category_id))
 
 
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/edit',
@@ -463,19 +480,25 @@ def editItem(category_id, item_id):
         user = session.query(User).filter_by(email=login_session['email'])
         user = user.one()
         user_id = user.id
+        title = request.form['title']
+        description = request.form['description']
+        cat_id = request.form['category_id']
         # Double check that user is authorised to make an item in this category
         if editedItem.user_id != user_id:
             flash("You are not authorised to edit this item...")
             return redirect(url_for('showItems', category_id=category_id))
         # Update values
-        editedItem.title = request.form['title']
-        editedItem.description = request.form['description']
-        category_id = request.form['category_id']
-        editedItem.category_id = category_id
-        session.add(editedItem)
-        session.commit()
-        flash("Item successfully edited!")
-        return redirect(url_for('showItems', category_id=category_id))
+        if title and description and cat_id:
+            editedItem.title = title
+            editedItem.description = description
+            category_id = cat_id
+            editedItem.category_id = category_id
+            session.add(editedItem)
+            session.commit()
+            flash("Item successfully edited!")
+            return redirect(url_for('showItems', category_id=category_id))
+        flash('Please complete the form!')
+        return redirect(url_for('editItem', category_id=category_id, item_id=item_id))
 
 
 @app.route('/catalog/<int:category_id>/items/<int:item_id>/delete',
