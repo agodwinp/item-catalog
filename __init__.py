@@ -22,6 +22,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 # Instantiate Flask application and database session
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = 'AUnm0\-7Hu$cmOPp+x^j]!34an*js.(8j'
 auth = HTTPBasicAuth()
 engine = create_engine('postgresql://catalog:password@localhost/catalog')
 Base.metadata.bind = engine
@@ -29,8 +30,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Load client ID for Google sign-in
-CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = "169649741771-41dfhe2bc1kmjkfq1r97ir1b24cr9lqm.apps.googleusercontent.com"
 
 
 # Function used for generate state
@@ -538,6 +538,5 @@ def deleteItem(category_id, item_id):
 
 
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
